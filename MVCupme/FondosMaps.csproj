@@ -279,6 +279,7 @@
     <Content Include="images\leyend\pto_vive_digital.png" />
     <Content Include="images\leyend\SinAprobar.png" />
     <Content Include="images\leyend\Upme.png" />
+    <Content Include="images\loading.gif" />
     <Content Include="images\logo UPME.png" />
     <Content Include="images\logo.png" />
     <Content Include="images\portfolio\thumb\en_infraestructura.jpg" />
@@ -346,7 +347,6 @@
     <Content Include="Scripts\app\BusquedaMun.js" />
     <Content Include="Scripts\app\Globalconfig.js" />
     <Content Include="Scripts\app\MainCargaDatos.js" />
-    <Content Include="Scripts\app\MainIndex.js" />
     <Content Include="Scripts\app\MainPie.js" />
     <Content Include="Scripts\app\Usuarios.js" />
     <Content Include="Scripts\app\MainNav.js" />
@@ -518,7 +518,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\Validar.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
@@ -591,7 +590,6 @@
     <Content Include="Scripts\libs\font-awesome-4.2.0\scss\_spinning.scss" />
     <Content Include="Scripts\libs\font-awesome-4.2.0\scss\_stacked.scss" />
     <Content Include="Scripts\libs\font-awesome-4.2.0\scss\_variables.scss" />
-    <Content Include="Views\Home\Crear.cshtml" />
     <Content Include="Scripts\libs\font-awesome-4.2.0\fonts\fontawesome-webfont.eot" />
     <Content Include="Scripts\libs\font-awesome-4.2.0\fonts\fontawesome-webfont.ttf" />
     <Content Include="Scripts\libs\font-awesome-4.2.0\fonts\fontawesome-webfont.woff" />
@@ -640,9 +638,9 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>63944</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/FondosMaps</IISUrl>
+          <IISUrl>http://localhost/FondosProy</IISUrl>
           <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
-          <IISAppRootUrl>http://localhost/MVCupme</IISAppRootUrl>
+          <IISAppRootUrl>http://localhost/FondosProy</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

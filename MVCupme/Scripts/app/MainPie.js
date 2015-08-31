@@ -76,7 +76,7 @@ function getFondos(cod_dept, cod_mpio,nombre) {
 function getFondoDataPie(where, idGrupo, array, nombre) {
     var arrayJsonFondos = [];
     var queryDataPie = L.esri.Tasks.query({
-        url: dominio + urlHostDataFO + 'MapServer/' + '2'
+        url: config.dominio + config.urlHostDataFO + 'MapServer/' + '2'
     });
 
     queryDataPie

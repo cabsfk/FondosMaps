@@ -3,7 +3,7 @@
 
 var LyrMunicipio, LyrMunicipio;
 var ServiceDaneFind = L.esri.Tasks.find({
-    url: dominio + urlHostDP + 'MapServer'
+    url: config.dominio + config.urlHostDP + 'MapServer'
 });
 
 /*

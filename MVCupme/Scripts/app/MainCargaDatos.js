@@ -1,20 +1,20 @@
 ﻿
 var featuresFondos;
 var queryDataFondos = L.esri.Tasks.query({
-    url: dominio + urlHostDataFO + 'MapServer/' + '2'
+    url: config.dominio + config.urlHostDataFO + 'MapServer/' + '2'
 });
 
 
 var LyrMunicipioSim;
 
 var queryMunSimpli = L.esri.Tasks.query({
-    url: dominio + urlHostDataFO + 'MapServer/' + '0'
+    url: config.dominio + config.urlHostDataFO + 'MapServer/' + '0'
 });
 
 var LyrDeptoSim;
 
 var queryDeptoSimpli = L.esri.Tasks.query({
-    url: dominio + urlHostDataFO + 'MapServer/' + '1'
+    url: config.dominio + config.urlHostDataFO + 'MapServer/' + '1'
 });
 
 function agregarparametros(feature){

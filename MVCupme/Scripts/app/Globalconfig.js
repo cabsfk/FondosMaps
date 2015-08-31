@@ -1,23 +1,22 @@
 ﻿
-var dominio = "http://arcgis.simec.gov.co:6080"; //Dominio del arcgis server  "http://localhost:6080" //
 
+config = {
+    dominio: "http://arcgis.simec.gov.co:6080", //Dominio del arcgis server  "http://localhost:6080" //
+    urlHostDataFO: "/arcgis/rest/services/UPME_FO/UPME_FO_Indicadores_Proyecto/",
+    urlHostDP: "/arcgis/rest/services/UPME_BC/UPME_BC_Sitios_UPME_Division_Politica/",
+    MPIO_GEN: '0',
+    DEPTO_GEN: '1',
+    iNDI: '2',
+    FO: '3',
+    SEC: '4',
+    CON: '5',
+    EST: '6',
 
-//Servicios Informacion Fondos.
-var urlHostDataFO = "/arcgis/rest/services/UPME_FO/UPME_FO_Indicadores_Proyecto/";
-//var urlHostDataFO = "/arcgis/rest/services/UPME/UPME_FO_INDICADORES_PROYECTO/";
+}
 
-//Servicio de Divicion politica de Arcgis
-var urlHostDP = "/arcgis/rest/services/UPME_BC/UPME_BC_Sitios_UPME_Division_Politica/";
-
-
-
-var geojsonMarkerSinAprobar = { icon: L.AwesomeMarkers.icon({ icon: 'home', prefix: 'fa', markerColor: 'orange' }), riseOnHover: true };
-var geojsonMarkerSubEstacion = { icon: L.AwesomeMarkers.icon({ icon: 'bolt', prefix: 'fa', markerColor: 'cadetblue' }), riseOnHover: true };
-var geojsonMarkerSubEstacionEdit = { icon: L.AwesomeMarkers.icon({ icon: 'bolt', prefix: 'fa', markerColor: 'orange' }), riseOnHover: true };
-
-var arrayclases = [], arrayTension = [];
-
-
+glo = {
+    SectoFo:''
+}
 
 /***********************************
  // CONFIGURACION DE MAPA
@@ -185,13 +184,7 @@ $(function () {
         L.easyButton(promptIcon[i], functions[i], hoverText[i])
     } (i);
 });
-/*var MapLayerLimitesDane = L.esri.dynamicMapLayer(dominio +urlHostDP+ 'MapServer', {
-    layers: [2, 3]
-}).addTo(map);
 
-MapLayerLimitesDane.on('load', function (e) {
-    MapLayerLimitesDane.bringToBack();
-});*/
 
 
 $('#date_ini').datetimepicker({
@@ -209,7 +202,7 @@ $('#date_fin').datetimepicker({
 
 var arrayFondos = [];
 var query_fondos = L.esri.Tasks.query({
-    url: dominio + urlHostDataFO + 'MapServer/3'
+    url: config.dominio + config.urlHostDataFO + 'MapServer/'+config.FO
 });
 
 query_fondos.where("1='1'").returnGeometry(false).run(function (error, featureCollection) {
@@ -225,7 +218,7 @@ query_fondos.where("1='1'").returnGeometry(false).run(function (error, featureCo
 
 var arraySectores = [];
 var query_sectores = L.esri.Tasks.query({
-    url: dominio + urlHostDataFO + 'MapServer/4'
+    url: config.dominio + config.urlHostDataFO + 'MapServer/'+config.SEC
 });
 
 query_sectores.where("1='1'").returnGeometry(false).run(function (error, featureCollection) {
@@ -242,7 +235,7 @@ query_sectores.where("1='1'").returnGeometry(false).run(function (error, feature
 
 var arrayConcepto = [];
 var query_Concepto = L.esri.Tasks.query({
-    url: dominio + urlHostDataFO + 'MapServer/5'
+    url: config.dominio + config.urlHostDataFO + 'MapServer/'+config.CON
 });
 
 query_Concepto.where("1='1'").returnGeometry(false).run(function (error, featureCollection) {
@@ -261,7 +254,7 @@ var arrayEstado = [];
 
 
 var query_Estado = L.esri.Tasks.query({
-    url: dominio + urlHostDataFO + 'MapServer/6'
+    url: config.dominio + config.urlHostDataFO + 'MapServer/'+config.EST
 });
 
 query_Estado.where("1='1'").returnGeometry(false).run(function (error, featureCollection) {
@@ -273,6 +266,25 @@ query_Estado.where("1='1'").returnGeometry(false).run(function (error, featureCo
     });
     $("#SelctEstado").multiselect('dataprovider', data);
 });
+
+
+var query_SectorFO = L.esri.Tasks.query({
+    url: config.dominio + config.urlHostDataFO + 'MapServer/'+config.iNDI
+});
+
+query_SectorFO
+    .where("1='1'")
+    .returnGeometry(false)
+    .run(function (error, featureCollection) {
+    var data = [];
+    $.each(featureCollection.features.reverse(), function (index, value) {
+        arrayEstado[value.properties.ID_ESTADO] = value.properties.ESTADO;
+        var array = { label: value.properties.ESTADO, value: value.properties.ID_ESTADO };
+        data.push(array);
+    });
+    $("#SelctEstado").multiselect('dataprovider', data);
+});
+
 
 
 var query_ = L.esri.Tasks.query({

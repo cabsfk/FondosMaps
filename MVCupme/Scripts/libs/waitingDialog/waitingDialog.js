@@ -14,7 +14,7 @@ var waitingDialog = waitingDialog || (function ($) {
 		'<div class="modal-content">' +
 			'<div class="modal-header"><h3 style="margin:0;"></h3></div>' +
 			'<div class="modal-body">' +
-                '<img class="displayed" src="../FondosMaps/images/loading.gif"" width="300" height="180"><br><hr>' +
+                '<img class="displayed" src="images/loading.gif"" width="300" height="180"><br><hr>' +
                 
 				'<div class="progress progress-striped active" style="margin-bottom:0;"><div class="progress-bar" style="width: 100%"></div></div>' +
 			'</div>' +
