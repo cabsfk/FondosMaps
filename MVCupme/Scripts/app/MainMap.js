@@ -52,8 +52,8 @@ var lyrTotalProyectos;
 			var layer = e.target;
 
 			layer.setStyle({
-				weight: 5,
-				color: '#666',
+				weight: 4,
+				color: '#00FFFF',
 				dashArray: '',
 				fillOpacity: 0.7
 			});

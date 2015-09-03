@@ -114,20 +114,7 @@
                             <button type="button" id="BuscarMapa" class="btn btn-success btn-block">
                                 <span class="glyphicon glyphicon-search"></span> Buscar</button>
                         </div>
-                        <form>
-                            <hr>
-                            <h4><p class="text-center"> Consolidado Nacional</p></h4>
-                            <hr>
-                            <div class="row">
-                                <div class="col-md-5"><small>Valor Total:</small></div>
-                                <div class="col-md-7"><b id="ValorConTotal"></b></div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-5"><small>Num. Beneficiarios:</small></div>
-                                <div class="col-md-7"><b id="BeneficiariosConTotal"></b></div>
-                            </div>
-
-                        </form>
+                        
                     </div>
                     
                     <div role="tabpanel" class="tab-pane" id="Busqueda">
@@ -158,10 +145,68 @@
             
         </div>
         <div class="panel-footer">
+            <form>
+                <h4><p class="text-center">Consolidado Nacional <br>Según la Búsqueda</p></h4>
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#tabValorFavorable" role="tab" data-toggle="tab">Favorable</a></li>
+                    <li role="presentation"><a href="#tabValorAsig" role="tab" data-toggle="tab">Asignacion</a></li>
+                    <li role="presentation"><a href="#tabValorTotal" role="tab" data-toggle="tab">Total</a></li>
 
-            <div class="row">
-               
-            </div>
+                    
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    
+                    <div role="tabpanel" class="tab-pane active" id="tabValorFavorable">
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-5"><small>Valor (Corriente):</small></div>
+                            <div class="col-md-7"><b id="lbValorFav"></b></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5"><small>Num. Beneficiarios:</small></div>
+                            <div class="col-md-7"><b id="lbBeneficiariosFav"></b></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5"><small>Cant. de Proyectos:</small></div>
+                            <div class="col-md-7"><b id="lbCantProyFav"></b></div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="tabValorAsig">
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-5"><small>Valor (Corriente):</small></div>
+                            <div class="col-md-7"><b id="lbValorAsig"></b></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5"><small>Num. Beneficiarios:</small></div>
+                            <div class="col-md-7"><b id="lbBeneficiarioAsig"></b></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5"><small>Cant. de Proyectos:</small></div>
+                            <div class="col-md-7"><b id="lbCantProyoAsig"></b></div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane " id="tabValorTotal">
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-5"><small>Valor (Corriente):</small></div>
+                            <div class="col-md-7"><b id="ValorConTotal"></b></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5"><small>Num. Beneficiarios:</small></div>
+                            <div class="col-md-7"><b id="BeneficiariosConTotal"></b></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5"><small>Cant. de Proyectos:</small></div>
+                            <div class="col-md-7"><b id="CantProyConTotal"></b></div>
+                        </div>
+
+                    </div>
+                </div>
+                
+
+            </form>
         </div>
     </div>
 </div>

@@ -1,23 +1,26 @@
 ﻿
 
 config = {
-    dominio: "http://arcgis.simec.gov.co:6080", //Dominio del arcgis server  "http://localhost:6080" //
+    dominio: "http://arcgis.simec.gov.co:6080", //Dominio del arcgis server   //
+    dominio2: "http://localhost:6080",
     urlHostDataFO: "/arcgis/rest/services/UPME_FO/UPME_FO_Indicadores_Proyecto/",
     urlHostDP: "/arcgis/rest/services/UPME_BC/UPME_BC_Sitios_UPME_Division_Politica/",
     MPIO_GEN: '0',
     DEPTO_GEN: '1',
-    iNDI: '2',
+    INDI: '2',
     FO: '3',
     SEC: '4',
     CON: '5',
-    EST: '6',
-
+    EST: '6'
 }
 
 glo = {
-    SectoFo:''
+    SectoFo: '',
+    filtroSectoFo: '',
+    ConEst: '',
+    filtroConEst: ''
 }
-
+var SumaTotales = { Valor: 0, Beneficiarios: 0 };
 /***********************************
  // CONFIGURACION DE MAPA
  ***********************************/
@@ -113,7 +116,11 @@ $("#BtnMonstrarConven").click(function () {
 });
 
 
-
+Array.prototype.unique = function (a) {
+    return function () { return this.filter(a) }
+}(function (a, b, c) {
+    return c.indexOf(a, b + 1) < 0
+});
 
 
 
@@ -212,7 +219,8 @@ query_fondos.where("1='1'").returnGeometry(false).run(function (error, featureCo
         var array = { label: value.properties.SIGLA+" - "+value.properties.NOMBRE, value: value.properties.ID_FONDO};
         data.push(array);
     });
-    $("#SelctFondo").multiselect('dataprovider', data);
+  
+    $('#SelctFondo').multiselect('disable');
 });
 
 
@@ -264,35 +272,8 @@ query_Estado.where("1='1'").returnGeometry(false).run(function (error, featureCo
         var array = {label: value.properties.ESTADO , value: value.properties.ID_ESTADO};
         data.push(array);
     });
-    $("#SelctEstado").multiselect('dataprovider', data);
-});
-
-
-var query_SectorFO = L.esri.Tasks.query({
-    url: config.dominio + config.urlHostDataFO + 'MapServer/'+config.iNDI
-});
-
-query_SectorFO
-    .where("1='1'")
-    .returnGeometry(false)
-    .run(function (error, featureCollection) {
-    var data = [];
-    $.each(featureCollection.features.reverse(), function (index, value) {
-        arrayEstado[value.properties.ID_ESTADO] = value.properties.ESTADO;
-        var array = { label: value.properties.ESTADO, value: value.properties.ID_ESTADO };
-        data.push(array);
-    });
-    $("#SelctEstado").multiselect('dataprovider', data);
-});
-
-
-
-var query_ = L.esri.Tasks.query({
-    url: 'http://arcgis.simec.gov.co:6080/arcgis/rest/services/UPME_FO/UPME_FO_Indicadores_Proyecto/MapServer/2'
-});
-
-query_.where("1='1'").returnGeometry(false).run(function (error, featureCollection) {
-    console.log(featureCollection);
+  
+    $('#SelctEstado').multiselect('disable');
 });
 
 $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
@@ -304,8 +285,70 @@ $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 
 });
 
+var query_SectorFO = L.esri.Tasks.query({
+    url: config.dominio2 + config.urlHostDataFO + 'MapServer/'+config.INDI
+}).fields(['SEC ', 'FO'])
+.where("1=1")
+.returnGeometry(false);
+query_SectorFO.params.returnDistinctValues = true;
+query_SectorFO.run(function (error, featureCollection) {
+    glo.SectoFo = featureCollection.features;
+});
+var query_ConEst = L.esri.Tasks.query({
+    url: config.dominio2 + config.urlHostDataFO + 'MapServer/' + config.INDI
+}).fields(['CON', 'ES'])
+.where("1=1")
+.returnGeometry(false);
+
+query_ConEst.params.returnDistinctValues = true;
+query_ConEst.run(function (error, featureCollection) {
+    glo.ConEst = featureCollection.features;
+   
+});
+
+
+
+function getSelectFO(values) {
+    
+    var data = [];
+    if (values.length != 0) {
+        $.each(glo.SectoFo, function (index, value) {
+            if (values.indexOf(String(value.properties.SEC)) >= 0) {
+                var array = { label: arrayFondos[value.properties.FO], value: value.properties.FO };
+                data.push(array);
+            }
+        });
+        $("#SelctFondo").multiselect('dataprovider', data);
+        $('#SelctFondo').multiselect('enable');
+    } else {
+        $("#SelctFondo").multiselect('dataprovider', data);
+        $('#SelctFondo').multiselect('disable');
+    }
+}
+function getSelectCon(values) {
+    
+    var data = [];
+    console.log(values);
+    if (values.length != 0) {
+        $.each(glo.ConEst, function (index, value) {
+            console.log(values.indexOf(String(value.properties.CON)));
+            if (values.indexOf(String(value.properties.CON)) >= 0) {
+                
+                var array = { label: arrayEstado[value.properties.ES], value: value.properties.ES };
+                data.push(array);
+            }
+        });
+        $("#SelctEstado").multiselect('dataprovider', data);
+        $('#SelctEstado').multiselect('enable');
+    } else {
+        $("#SelctEstado").multiselect('dataprovider', data);
+        $('#SelctEstado').multiselect('disable');
+    }
+}
+
 $(function () {
     $('[data-toggle="tooltip"]').tooltip();
+    
     $("#SelctFondo,#SelctSectores,#SelctEstado,#SelctConcepto").multiselect({
         includeSelectAllOption: true,
         enableFiltering: true,
@@ -316,25 +359,50 @@ $(function () {
         maxHeight: 250,
         filterPlaceholder: 'Buscar...',
         buttonText: function (options, select) {
+            
+            var labels = [], values = [];
+            
             if (options.length === 0) {
+                if (select.context.id == 'SelctSectores') {
+                    if (glo.filtroSectoFo != '') {
+                        glo.filtroSectoFo = [];
+                        getSelectFO([]);
+                    }                    
+                }
+                if (select.context.id == 'SelctConcepto') {
+                    if (glo.filtroConEst != '') {
+                        glo.filtroConEst = [];
+                        getSelectCon([]);
+                    }
+                }
+                
                 return 'No hay Seleccionados';
             }
-            else if (options.length > 3) {
-                return 'Mas de 3 Seleccionados';
-            }
             else {
-                var labels = [];
+                
                 options.each(function () {
                     if ($(this).attr('label') !== undefined) {
                         labels.push($(this).attr('label'));
+                        values.push($(this).attr('value'));
                     }
                     else {
                         labels.push($(this).html());
                     }
                 });
+                
+                if (select.context.id == 'SelctSectores') {
+                    glo.filtroSectoFo = values;
+                    getSelectFO(values);
+                }
+                if (select.context.id == 'SelctConcepto') {
+                    glo.filtroConEst = values;
+                    getSelectCon(values);
+                }
                 return labels.join(', ') + '';
             }
         }
     });
+    
 });
-var SumaTotales = { Valor: 0, Beneficiarios: 0};
+
+
