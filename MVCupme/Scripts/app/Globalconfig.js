@@ -286,7 +286,7 @@ $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 });
 
 var query_SectorFO = L.esri.Tasks.query({
-    url: config.dominio2 + config.urlHostDataFO + 'MapServer/'+config.INDI
+    url: config.dominio + config.urlHostDataFO + 'MapServer/'+config.INDI
 }).fields(['SEC ', 'FO'])
 .where("1=1")
 .returnGeometry(false);
@@ -295,7 +295,7 @@ query_SectorFO.run(function (error, featureCollection) {
     glo.SectoFo = featureCollection.features;
 });
 var query_ConEst = L.esri.Tasks.query({
-    url: config.dominio2 + config.urlHostDataFO + 'MapServer/' + config.INDI
+    url: config.dominio + config.urlHostDataFO + 'MapServer/' + config.INDI
 }).fields(['CON', 'ES'])
 .where("1=1")
 .returnGeometry(false);

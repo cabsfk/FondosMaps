@@ -33,8 +33,8 @@ function pie(arrayJsonFondos, idContainer, nombre) {
 			text:   ''
 		},
 		credits: {
-			text: '-',
-			href: '#'
+		    text: 'FONDOS-UPME',
+		    href: 'http://www.upme.gov.co'
 		},
 		tooltip: {
             pointFormat: '<b>${point.y}</b><br><b>{point.percentage:.1f}%</b>'
@@ -48,6 +48,9 @@ function pie(arrayJsonFondos, idContainer, nombre) {
                 },
                 showInLegend: true
             }
+        },
+        exporting: {
+            filename: 'Fondos ' + nombre
         },
         series: [{
             colorByPoint: true,
@@ -69,14 +72,14 @@ function getFondos(cod_dept, cod_mpio,nombre) {
 
     getFondoDataPie(where, 'FO', arrayFondos,nombre);
     getFondoDataPie(where, 'SEC', arraySectores,nombre);
-    getFondoDataPie(where, 'ES', arrayEstado,nombre);
+   // getFondoDataPie(where, 'ES', arrayEstado,nombre);
     getFondoDataPie(where, 'CON', arrayConcepto, nombre);
 }
 
 function getFondoDataPie(where, idGrupo, array, nombre) {
     var arrayJsonFondos = [];
     var queryDataPie = L.esri.Tasks.query({
-        url: config.dominio2 + config.urlHostDataFO + 'MapServer/' + config.INDI
+        url: config.dominio + config.urlHostDataFO + 'MapServer/' + config.INDI
     });
 
     queryDataPie

@@ -1,35 +1,26 @@
 ﻿
-var dominio = "http://arcgis.simec.gov.co:6080"; //Dominio del arcgis server  http://localhost:6080
 
-var buffetCP = 300;
-var ordenarGeojson; //global de orden de capa de centrso poblados
-
-var id_user = idUsuario;
-var id_user_validacion = idUsuario;
-var UsrOrgJson = "";
-
-if (idUsuario != "") {
-
-    $.getJSON("../../MVCupme/Home/UsrOrgJson?idusuario=" + idUsuario, function (data) {
-        UsrOrgJson = data;
-        console.log("UsrOrgJson");
-        console.log(UsrOrgJson);
-    })
+config = {
+    dominio: "http://arcgis.simec.gov.co:6080", //Dominio del arcgis server   //
+    dominio2: "http://localhost:6080",
+    urlHostDataFO: "/arcgis/rest/services/UPME_FO/UPME_FO_Indicadores_Proyecto/",
+    urlHostDP: "/arcgis/rest/services/UPME_BC/UPME_BC_Sitios_UPME_Division_Politica/",
+    MPIO_GEN: '0',
+    DEPTO_GEN: '1',
+    INDI: '2',
+    FO: '3',
+    SEC: '4',
+    CON: '5',
+    EST: '6'
 }
 
-
-var urlHostSUEdit = "/arcgis/rest/services/UPME_BC/UPME_BC_Sitios_UPME_Edicion/";
-var urlHostSUCons = "/arcgis/rest/services/UPME_BC/UPME_BC_Sitios_UPME_Vistas/";
-var urlHostDP = "/arcgis/rest/services/UPME_BC/UPME_BC_Sitios_UPME_Division_Politica/";
-
-var geojsonMarkerDane = { icon: L.AwesomeMarkers.icon({ icon: 'home', prefix: 'fa', markerColor: 'purple' }), riseOnHover: true };
-var geojsonMarkerUpme = { icon: L.AwesomeMarkers.icon({ icon: 'home', prefix: 'fa', markerColor: 'cadetblue' }), riseOnHover: true };
-var geojsonMarkerSinAprobar = { icon: L.AwesomeMarkers.icon({ icon: 'home', prefix: 'fa', markerColor: 'orange' }), riseOnHover: true };
-
-
-var arrayclases = [], arraytipos = [];
-
-
+glo = {
+    SectoFo: '',
+    filtroSectoFo: '',
+    ConEst: '',
+    filtroConEst: ''
+}
+var SumaTotales = { Valor: 0, Beneficiarios: 0 };
 /***********************************
  // CONFIGURACION DE MAPA
  ***********************************/
@@ -41,6 +32,7 @@ var map = L.map('map', {
     center: [4.12521648, -74.5020],
     zoom: 5,
     minZoom: 5,
+    maxZoom:11,
     maxBounds: bounds,
     zoomControl: false
 });
@@ -61,22 +53,74 @@ if (Nombrepagina == "") {
     prefijo = "../";
 }
 
+var Limitesleyenda = [
+    0,
+    1,
+    1000000000,
+    2000000000,
+    5000000000,
+    10000000000,
+    20000000000,
+    50000000000,
+    100000000000];
+
+function getColor(d) {
+    return d >= Limitesleyenda[8] ? '#800026' :
+            d >= Limitesleyenda[7] ? '#BD0026' :
+            d >= Limitesleyenda[6] ? '#E31A1C' :
+            d >= Limitesleyenda[5] ? '#FC4E2A' :
+            d >= Limitesleyenda[4] ? '#FD8D3C' :
+            d >= Limitesleyenda[3] ? '#FEB24C' :
+            d >= Limitesleyenda[2] ? '#FED976' :
+            d >= Limitesleyenda[1] ? '#FFEDA0' :
+              'rgba(255,255,255,0.8)';
+}
 
 legend.onAdd = function (map) {
-    var div = L.DomUtil.create('div', 'info legend');
-    div.innerHTML += '<i ><img src="' + prefijo + 'images/leyend/creacionpunto.png"  height="20px"></i>Sitio UPME en creación<br>';
-    div.innerHTML += '<i ><img src="'+prefijo+'images/leyend/Upme.png"  height="20px"></i>Sitio UPME<br>';
-    div.innerHTML += '<i ><img src="' + prefijo + 'images/leyend/Dane.png"  height="20px"></i>Centro Poblado DANE<br>';
-    div.innerHTML += '<i ><img src="' + prefijo + 'images/leyend/SinAprobar.png" height="20px"></i> Sitio Upme Sin Aprobar<br>';
-    div.innerHTML += '<i ><img src="' + prefijo + 'images/leyend/Cluster.png" height="18px"></i> Agrupaciones<br>';
-    div.innerHTML += '<i ><img src="' + prefijo + 'images/leyend/municipio.png"  height="17px"></i>Municipio<br>';
+  
+    var div = L.DomUtil.create('div', 'info legend'),
+       
+       labels = [];
+
+    // loop through our density intervals and generate a label with a colored square for each interval
+    div.innerHTML += '<b>Valor Total </b><br>';
+
+    for (var i = 0; i < Limitesleyenda.length; i++) {
+        if (i == 0) {
+            div.innerHTML +=
+            '<i style="background:' + getColor(Limitesleyenda[i] + 1) + '"></i> ' +
+            numeral(Limitesleyenda[i]).format('$0,0')  +'&ndash;' + '<br>' ;
+        } else {
+            div.innerHTML +=
+            '<i style="background:' + getColor(Limitesleyenda[i] + 1) + '"></i> ' +
+            numeral(Limitesleyenda[i]).format('$0,0') + (numeral(Limitesleyenda[i + 1]).format('$0,0') ? '&ndash;' + numeral(Limitesleyenda[i + 1]).format('$0,0') + '<br>' : '+');
+        }
+    }
+    div.innerHTML += '<b>Convenciones </b><br>';
+
     div.innerHTML += '<i ><img src="' + prefijo + 'images/leyend/municipioSelecionado.png"  height="17px"></i>Municipio Seleccionado<br>';
-    div.innerHTML += '<i ><img src="' + prefijo + 'images/leyend/zonaRestriccion.png"  height="17px"></i>Zona De Restricción<br>';
-    div.innerHTML += '<i ><img src="' + prefijo + 'images/leyend/CentroPoblado.png"  height="17px"></i>Centro Poblado<br>';
     return div;
 };
 
-legend.addTo(map);
+$("#BtnMonstrarConven").click(function () {
+    if ($(".legend").is(":visible")) {
+        $(".legend").hide("slow", function () {
+            $("#textlegend").empty().append("Mostrar");
+        });
+    } else {
+        $(".legend").show("slow", function () {
+            $("#textlegend").empty().append("Ocultar");
+        });
+    }
+    
+});
+
+
+Array.prototype.unique = function (a) {
+    return function () { return this.filter(a) }
+}(function (a, b, c) {
+    return c.indexOf(a, b + 1) < 0
+});
 
 
 
@@ -95,7 +139,7 @@ var OpenMapSurfer_Roads = L.tileLayer('http://openmapsurfer.uni-hd.de/tiles/road
     attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 });
 
-var LyrBase = L.esri.basemapLayer('Streets').addTo(map);;
+var LyrBase = L.esri.basemapLayer('Imagery').addTo(map);;
 var LyrLabels;
 
 function setBasemap(basemap) {
@@ -127,11 +171,12 @@ var osm2 = L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
     id: 'examples.map-i875mjb7'
 });
 
-var miniMap = new L.Control.MiniMap(osm2, { toggleDisplay: true, width: 190, height: 80, zoomLevelOffset: -5 }).addTo(map);
+var miniMap = new L.Control.MiniMap(osm2, { toggleDisplay: true, width: 190, height: 90, zoomLevelOffset: -6 });
 
+//miniMap.addTo(map);
 
 var promptIcon = ['glyphicon-fullscreen'];
-var hoverText = ['Extencion Total'];
+var hoverText = ['Extensión Total'];
 var functions = [function () {
     map.setView([4.12521648, -74.5020], 5);
 }];
@@ -146,208 +191,218 @@ $(function () {
         L.easyButton(promptIcon[i], functions[i], hoverText[i])
     } (i);
 });
-var MapLayerLimitesDane = L.esri.dynamicMapLayer(dominio +urlHostDP+ 'MapServer', {
-    layers: [2, 3]
-}).addTo(map);
 
-MapLayerLimitesDane.on('load', function (e) {
-    MapLayerLimitesDane.bringToBack();
+
+
+$('#date_ini').datetimepicker({
+    format: 'DD/MM/YYYY',
+    locale: 'es',
+    defaultDate: '01/01/' + moment().format('YYYY')
+});
+$('#date_fin').datetimepicker({
+    format: 'DD/MM/YYYY',
+    locale: 'es',
+    defaultDate: moment()
 });
 
-/*****************************************************
-******Opciones Formulario De Centros poblados
-*****************************************************/
 
-var query_clase = L.esri.Tasks.query({
-    url: dominio + urlHostSUCons+'MapServer/2'
+
+var arrayFondos = [];
+var query_fondos = L.esri.Tasks.query({
+    url: config.dominio + config.urlHostDataFO + 'MapServer/'+config.FO
 });
 
-query_clase.where("1=1").returnGeometry(false).run(function (error, featureCollection) {
-    $.each(featureCollection.features, function (index, value) {
-
-        arrayclases[value.properties.ID_CLASE_CP] = value.properties.NOM_CLASE_CP;
-            $("#SectClase").append('<option value="' + value.properties.ID_CLASE_CP + '">' + value.properties.NOM_CLASE_CP + '</option>');
-            $("#EditSectClase").append('<option value="' + value.properties.ID_CLASE_CP + '">' + value.properties.NOM_CLASE_CP + '</option>');
-        
+query_fondos.where("1='1'").returnGeometry(false).run(function (error, featureCollection) {
+    var data = [];
+    $.each(featureCollection.features.reverse(), function (index, value) {
+        arrayFondos[value.properties.ID_FONDO] = value.properties.SIGLA;
+        var array = { label: value.properties.SIGLA+" - "+value.properties.NOMBRE, value: value.properties.ID_FONDO};
+        data.push(array);
     });
+  
+    $('#SelctFondo').multiselect('disable');
 });
 
 
-function ActClaseVentEmer(){
-    query_clase.where("1=1").returnGeometry(false).run(function (error, featureCollection) {
-        $.each(featureCollection.features, function (index, value) {
-            $("#ActSectClase").append('<option value="' + value.properties.ID_CLASE_CP + '">' + value.properties.NOM_CLASE_CP + '</option>');
-        });
+var arraySectores = [];
+var query_sectores = L.esri.Tasks.query({
+    url: config.dominio + config.urlHostDataFO + 'MapServer/'+config.SEC
+});
+
+query_sectores.where("1='1'").returnGeometry(false).run(function (error, featureCollection) {
+    var data = [];
+    $.each(featureCollection.features.reverse(), function (index, value) {
+        arraySectores[value.properties.ID_SECTOR] = value.properties.SIGLA;
+        var array = { label: value.properties.SIGLA + " - " + value.properties.NOMBRE, value: value.properties.ID_SECTOR };
+        data.push(array);
     });
-}
-
-var query_tipo = L.esri.Tasks.query({
-    url: dominio + urlHostSUCons+'MapServer/4'
+    $("#SelctSectores").multiselect('dataprovider', data);
 });
 
-query_tipo.where("1=1").returnGeometry(false).run(function (error, featureCollection) {
 
-    $.each(featureCollection.features, function (index, value) {
-        arraytipos[value.properties.ID_TIPO_CP] = value.properties.NOM_TIPO_CP;
-        console.log(value.properties.ID_TIPO_CP + '">' + value.properties.NOM_TIPO_CP);
-        if (value.properties.ID_TIPO_CP != 1) {
-            $("#SectTipo").append('<option value="' + value.properties.ID_TIPO_CP + '">' + value.properties.NOM_TIPO_CP + '</option>');
-            $("#EditSectTipo").append('<option value="' + value.properties.ID_TIPO_CP + '">' + value.properties.NOM_TIPO_CP + '</option>');
-        }
+
+var arrayConcepto = [];
+var query_Concepto = L.esri.Tasks.query({
+    url: config.dominio + config.urlHostDataFO + 'MapServer/'+config.CON
+});
+
+query_Concepto.where("1='1'").returnGeometry(false).run(function (error, featureCollection) {
+    var data = [];
+    $.each(featureCollection.features.reverse(), function (index, value) {
+        arrayConcepto[value.properties.ID_CONCEPTO] = value.properties.CONCEPTO;
+        var array = { label: value.properties.CONCEPTO, value: value.properties.ID_CONCEPTO  };
+        data.push(array);
     });
+    $("#SelctConcepto").multiselect('dataprovider', data);
 });
 
-for (i = moment().format('YYYY') ; i >=1990 ; i--) {
-    $("#SecVigenciaAnio").append('<option value="' + i + '">' + i + '</option>');
-    $("#EditSecVigenciaAnio").append('<option value="' + i + '">' + i + '</option>');
-}
+
+var arrayEstado = [];
 
 
 
-/*********************************
-//FUNCIONES
-**********************************/
+var query_Estado = L.esri.Tasks.query({
+    url: config.dominio + config.urlHostDataFO + 'MapServer/'+config.EST
+});
+
+query_Estado.where("1='1'").returnGeometry(false).run(function (error, featureCollection) {
+    var data = [];
+    $.each(featureCollection.features.reverse(), function (index, value) {
+        arrayEstado[value.properties.ID_ESTADO] = value.properties.ESTADO;
+        var array = {label: value.properties.ESTADO , value: value.properties.ID_ESTADO};
+        data.push(array);
+    });
+  
+    $('#SelctEstado').multiselect('disable');
+});
+
+$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    var idnewtab = ($(e.target).attr('href'));
+    $(idnewtab + "Color").addClass("text-primary");
+
+    var idoldtab = ($(e.relatedTarget).attr('href'));
+    $(idoldtab + "Color").removeClass("text-primary");
+
+});
+
+var query_SectorFO = L.esri.Tasks.query({
+    url: config.dominio + config.urlHostDataFO + 'MapServer/'+config.INDI
+}).fields(['SEC ', 'FO'])
+.where("1=1")
+.returnGeometry(false);
+query_SectorFO.params.returnDistinctValues = true;
+query_SectorFO.run(function (error, featureCollection) {
+    glo.SectoFo = featureCollection.features;
+});
+var query_ConEst = L.esri.Tasks.query({
+    url: config.dominio + config.urlHostDataFO + 'MapServer/' + config.INDI
+}).fields(['CON', 'ES'])
+.where("1=1")
+.returnGeometry(false);
+
+query_ConEst.params.returnDistinctValues = true;
+query_ConEst.run(function (error, featureCollection) {
+    glo.ConEst = featureCollection.features;
+   
+});
 
 
-function clickmap(id, lyrname) {
-    //console.log(LyrCentroPoblado);
-    if (lyrname == "LyrCentroPoblado") {
-        LyrCentroPoblado.eachLayer(function (marker) {
-            if (marker.feature.id == id) {
-                marker.openPopup();
-                map.panTo(marker.getLatLng());
+
+function getSelectFO(values) {
+    
+    var data = [];
+    if (values.length != 0) {
+        $.each(glo.SectoFo, function (index, value) {
+            if (values.indexOf(String(value.properties.SEC)) >= 0) {
+                var array = { label: arrayFondos[value.properties.FO], value: value.properties.FO };
+                data.push(array);
             }
         });
-    } else if (lyrname == "lyrCentrosPobladosT") {
-        lyrCentrosPobladosT.eachLayer(function (marker) {
-            if (marker.feature.id == id) {
-                marker.openPopup();
-                map.panTo(marker.getLatLng());
-            }
-        });
-    }else if (lyrname == "lyrTotalCentrosPoblados") {
-        lyrTotalCentrosPoblados.eachLayer(function (marker) {
-            if (marker.feature.id == id) {
+        $("#SelctFondo").multiselect('dataprovider', data);
+        $('#SelctFondo').multiselect('enable');
+    } else {
+        $("#SelctFondo").multiselect('dataprovider', data);
+        $('#SelctFondo').multiselect('disable');
+    }
+}
+function getSelectCon(values) {
+    
+    var data = [];
+    console.log(values);
+    if (values.length != 0) {
+        $.each(glo.ConEst, function (index, value) {
+            console.log(values.indexOf(String(value.properties.CON)));
+            if (values.indexOf(String(value.properties.CON)) >= 0) {
                 
-                map.setView(marker.getLatLng(), 14);
-                //map.panTo(marker.getLatLng());
-                marker.openPopup();
+                var array = { label: arrayEstado[value.properties.ES], value: value.properties.ES };
+                data.push(array);
             }
         });
-    }
-
-}
-function zoomCP(x, y) {
-    var latLng = L.latLng(y, x);
-    map.setView(latLng, 14);
-}
-var mousemove = document.getElementById('mousemove');
-
-map.on('mousemove', function (e) {
-    window[e.type].innerHTML = 'LON:'+e.latlng.lng.toFixed(6) + '   LAT:' + e.latlng.lat.toFixed(6);
-});
-
-function ClaseZona(valor, pretext) {
-    if (valor == '1') {
-        $("#" + pretext + "FormInpViviendasU").removeClass('hide');
-        $("#" + pretext + "FormInpViviendasR").addClass('hide');
-        $("#" + pretext + "FormInpViviendasSSU").removeClass('hide');
-        $("#" + pretext + "FormInpViviendasSSR").addClass('hide');
-    } else if (valor == '2') {
-        $("#" + pretext + "FormInpViviendasU").addClass('hide');
-        $("#" + pretext + "FormInpViviendasR").removeClass('hide');
-        $("#" + pretext + "FormInpViviendasSSU").addClass('hide');
-        $("#" + pretext + "FormInpViviendasSSR").removeClass('hide');
-    } else if (valor == '3') {
-        $("#" + pretext + "FormInpViviendasU").removeClass('hide');
-        $("#" + pretext + "FormInpViviendasR").removeClass('hide');
-        $("#" + pretext + "FormInpViviendasSSU").removeClass('hide');
-        $("#" + pretext + "FormInpViviendasSSR").removeClass('hide');
-    }
-}
-
-$("#SectClase").change(function () {
-    ClaseZona($(this).val(), "");
-});
-
-
-$("#EditSectClase").change(function () {
-    ClaseZona($(this).val(), "Edit");
-});
-
-function NumDec(event) {
-    if (event.keyCode < 48 || event.keyCode > 57) {
-        if (event.keyCode != 46 && event.keyCode != 45) {
-            event.returnValue = false;
-        }
-    }
-}
-function NumDecPos(event) {
-    if (event.keyCode < 48 || event.keyCode > 57) {
-        if (event.keyCode != 46) {
-            event.returnValue = false;
-        }
-    }
-}
-function NumPositivo(event) {
-    if (event.keyCode < 48 || event.keyCode > 57)
-        event.returnValue = false;
-
-}
-
-function limpiarRadios() {
-    if ($("input[name='ExisteCP']:checked").val() == "SI") {
-        $('#existSi').attr("checked", false);
+        $("#SelctEstado").multiselect('dataprovider', data);
+        $('#SelctEstado').multiselect('enable');
     } else {
-        $('#existNo').attr("checked", false);
+        $("#SelctEstado").multiselect('dataprovider', data);
+        $('#SelctEstado').multiselect('disable');
     }
-    $("#Pgn2Sig").addClass("disabled");
 }
 
-$('#SecVigenciaMes').prop('disabled', false);
-
-
-$("#SecVigenciaAnio,#EditSecVigenciaAnio").change(function () {
-    var currentId = $(this).attr('id');
-    var tipo = currentId.substr(0, 4);
-    var prevalue = tipo == "SecV" ? "" : tipo == "Edit" ? tipo.substr(0, 4) : tipo;
-    console.log('prevalue');
-    console.log(prevalue);
-    var SelctAnio = $("#" + prevalue + "SecVigenciaAnio").val();
-    if (SelctAnio == "") {
-        $('#' + prevalue + 'SecVigenciaMes').val("");
-        $("#" + prevalue + "SecVigenciaMes").prop('disabled', 'disabled');
-    } else {
-        $('#' + prevalue + 'SecVigenciaMes').prop('disabled', false);
-        $('#' + prevalue + 'SecVigenciaMes').empty();
-        $("#" + prevalue + "SecVigenciaMes").append('<option value=""></option>');
-        if (SelctAnio == moment().format("YYYY")) {
-            for (i = parseInt(moment().format('MM')) ; i >= 1 ; i--) {
-                $("#" + prevalue + "SecVigenciaMes").append('<option value="' + i + '">' + i + '</option>');
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+    
+    $("#SelctFondo,#SelctSectores,#SelctEstado,#SelctConcepto").multiselect({
+        includeSelectAllOption: true,
+        enableFiltering: true,
+        selectAllText: 'Todos',
+        enableCaseInsensitiveFiltering: true,
+        buttonWidth: '150px',
+        dropRight: false,
+        maxHeight: 250,
+        filterPlaceholder: 'Buscar...',
+        buttonText: function (options, select) {
+            
+            var labels = [], values = [];
+            
+            if (options.length === 0) {
+                if (select.context.id == 'SelctSectores') {
+                    if (glo.filtroSectoFo != '') {
+                        glo.filtroSectoFo = [];
+                        getSelectFO([]);
+                    }                    
+                }
+                if (select.context.id == 'SelctConcepto') {
+                    if (glo.filtroConEst != '') {
+                        glo.filtroConEst = [];
+                        getSelectCon([]);
+                    }
+                }
+                
+                return 'No hay Seleccionados';
             }
-        } else {
-            for (i = 12 ; i >= 1 ; i--) {
-                $("#" + prevalue + "SecVigenciaMes").append('<option value="' + i + '">' + i + '</option>');
+            else {
+                
+                options.each(function () {
+                    if ($(this).attr('label') !== undefined) {
+                        labels.push($(this).attr('label'));
+                        values.push($(this).attr('value'));
+                    }
+                    else {
+                        labels.push($(this).html());
+                    }
+                });
+                
+                if (select.context.id == 'SelctSectores') {
+                    glo.filtroSectoFo = values;
+                    getSelectFO(values);
+                }
+                if (select.context.id == 'SelctConcepto') {
+                    glo.filtroConEst = values;
+                    getSelectCon(values);
+                }
+                return labels.join(', ') + '';
             }
-        }
-    }
-});
-
-
-$("#SecVigenciaMes").prop('disabled', 'disabled');
-
-function getDataUser(idusuario) {
-    console.log(idusuario);
-    var datauserjson = '';
-    $.ajax({
-        url: "../../MVCupme/Home/UsrOrgJson?idusuario=" + idusuario,
-        dataType: 'json',
-        async: false,
-        success: function (json) {
-            datauserjson = json;
         }
     });
-    return datauserjson;
-}
     
-    
+});
+
+

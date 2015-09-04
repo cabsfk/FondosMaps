@@ -27,17 +27,26 @@ textarea {
 
 
 #panel_formulario {
+  position: absolute;
+  top: 53px;
+  left: -10px;
+  background: rgba(255, 255, 255, 0.1);
+  
+}
+
+#panel_superDerecho {
     position: absolute;
     top: 55px;
-    left: 0px;
+    right: 20px;
     background: rgba(255, 255, 255, 0.1);
- }
-
-#panel_centros_poblados {
+      z-index: 1001;
+}
+#panel_actualizar {
     position: absolute;
-    top: 52px;
+    top: 55px;
     right: 30px;
     background: rgba(255, 255, 255, 0.1);
+    z-index: 1001;
 }
 
 .hide {
@@ -106,6 +115,7 @@ textarea {
 .popupstyle {
     padding: 5px;
     min-width:200px;
+    margin-bottom: 3px;
 }
 
 .panel-primary>.panel-heading {
@@ -148,15 +158,19 @@ textarea {
 }
 #carousel-panel-generic{
     position: absolute;
-    bottom: 20px;
+    bottom: 15px;
     left: 5px;
     z-index: 1;
 }
+
+.carousel-indicators {
+  bottom: 0px;
+}
 .leaflet-right .leaflet-control {
-    margin-right: 2px;
+    margin-right: 4px;
 }
 .leaflet-bottom .leaflet-control {
-    margin-bottom: 2px;
+    margin-bottom: 4px;
 }
 .legend {
     line-height: 20px !important;
@@ -349,14 +363,84 @@ border-bottom-left-radius: 3px;
 #panel_edicion {
     position: absolute;
     top: 55px;
-    right: 40px;
+    right: 30px;
     background: rgba(255, 255, 255, 0.1);
-}
-h4, .h4, h5, .h5, h6, .h6 {
-  margin-top: 2px;
-  margin-bottom: 2px;
+    z-index:1001;
 }
 
 .clearfix:hover {
     background-color: #E6E6E6;
+}
+h4, .h4, h5, .h5, h6, .h6 {
+  margin-top: 5px;
+  margin-bottom: 2px;
+}
+
+.dimForm{
+    max-height:440px;
+    overflow:scroll;
+    overflow-x: hidden;
+}
+
+.hasDatepicker {
+    position: relative;
+    z-index: 9999;
+}
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 2000;
+  display: none;
+  float: left;
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  font-size: 14px;
+  text-align: left;
+  list-style: none;
+  background-color: #fff;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0,0,0,.15);
+  border-radius: 4px;
+  -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+  box-shadow: 0 6px 12px rgba(0,0,0,.175);
+}
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
+  color: #555;
+  cursor: default;
+  background-color: #FDFDFD;
+  border-bottom-color: rgba(74, 66, 66, 0);
+}
+label {
+  display: inline-block;
+  max-width: 100%;
+  margin-bottom: 0px;
+  font-weight: 700;
+}
+.form-group {
+  margin-bottom: 5px;
+  margin-top: 2px;
+}
+#BtnMonstrarConven{
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 1001;
+}
+.col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
+  position: relative;
+  min-height: 1px;
+  padding-right: 5px;
+  padding-left: 10px;
+}
+
+.displayed {
+    display: block;
+    margin-left: auto;
+    margin-right: auto 
+
 }

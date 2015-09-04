@@ -20,19 +20,20 @@ var lyrTotalProyectos;
 
 
         if(SumaTotales.Beneficiarios!=0){
-            var textlabel = '<h4> <p class="text-info">' + nombre + '</p></h4>' +
-          '<h5><small>Beneficiados: </small>' + numeral(feature.properties.U).format('0,0') + ' (' + numeral((feature.properties.U / SumaTotales.Beneficiarios) * 100).format('0,0') + '%)</h5>' +
-          '<h5><small>Valor: </small>' + numeral(feature.properties.VPU).format('$0,0') + ' (' + numeral((feature.properties.VPU / SumaTotales.Valor) * 100).format('0,0') + '%)</h5>' +
-          '<hr>' +
-          '<h5><small>Valor Solicitado: </small>' + numeral(feature.properties.VSU ).format('$0,0') +'</h5>' +
-          '<h5><small>Valor Terceros: </small>' + numeral(feature.properties.VTU ).format('$0,0') +'</h5>';
+            var textlabel = '<h6>' + nombre + '</h6>' +
+          '<small class="text-muted">Valor Corriente: </small>' + numeral(feature.properties.VPU).format('$0,0') + '<br>' +
+          '<small class="text-muted">Valor Costante: </small>' + '<br>' +
+          '<small class="text-muted">Valor Solicitado: </small>' + numeral(feature.properties.VSU).format('$0,0') + '<br>' +
+          '<small class="text-muted">Valor Asignado: </small>' + numeral(feature.properties.VAU).format('$0,0') + '<br>' +
+          '<small class="text-muted">Beneficiados: </small>' + numeral(feature.properties.U).format('0,0')+
+          '<small class="text-muted">Cantidad proyectos: </small>' + numeral(feature.properties.U).format('0,0')
+          ;
 
         }else{
             var textlabel = '<h4> <p class="text-info">' + nombre + '</p></h4>';
         }
         
-        layer.bindLabel(
-            textlabel,
+        layer.bindLabel( textlabel,
             { 'noHide': true });
     }
 

@@ -1,7 +1,7 @@
 ﻿
 var featuresFondos;
 var queryDataFondos = L.esri.Tasks.query({
-    url: config.dominio2 + config.urlHostDataFO + 'MapServer/' + config.INDI
+    url: config.dominio + config.urlHostDataFO + 'MapServer/' + config.INDI
 });
 
 
@@ -22,7 +22,8 @@ function agregarparametros(feature){
         feature.features[i].properties.U = 0;
         feature.features[i].properties.VPU = 0;
         feature.features[i].properties.VSU = 0;
-        feature.features[i].properties.VTU = 0;        
+        feature.features[i].properties.VASU = 0;
+        feature.features[i].properties.CANT = 0;
     }
     return feature;
 
@@ -35,7 +36,8 @@ function actualizarparametros(feature,row){
             feature.features[i].properties.U = row.U;
             feature.features[i].properties.VPU = row.VPU;
             feature.features[i].properties.VSU = row.VSU;
-            feature.features[i].properties.VTU = row.VTU;
+            feature.features[i].properties.VASU = row.VASU;
+            feature.features[i].properties.CANT = row.CANT;
             
             return feature;
         }
@@ -52,7 +54,8 @@ function actualizarparametrosMpio(feature, row) {
             feature.features[i].properties.U = row.U;
             feature.features[i].properties.VPU = row.VPU;
             feature.features[i].properties.VSU = row.VSU;
-            feature.features[i].properties.VTU = row.VTU;
+            feature.features[i].properties.VASU = row.VASU;
+            feature.features[i].properties.CANT = row.CANT;
             return feature;
         }
 
@@ -63,7 +66,7 @@ function actualizarparametrosMpio(feature, row) {
 
 function calculoDepto(featureCollection, LyrDeptoSim) {
     var cuentaValores = 0;
-    var sum_U = 0, sum_VPU = 0, sum_VSU = 0, sum_VTU = 0,  cont = 0;
+    var sum_U = 0, sum_VPU = 0, sum_VSU = 0, sum_VASU = 0,  cont = 0;
     SumaTotales.Valor = 0, SumaTotales.Beneficiarios = 0;
     for (var i = 0; i < featureCollection.features.length; i++) {
         if (i != featureCollection.features.length - 1) {
@@ -71,40 +74,40 @@ function calculoDepto(featureCollection, LyrDeptoSim) {
                 sum_U = sum_U + featureCollection.features[i].properties.U;
                 sum_VPU = sum_VPU + featureCollection.features[i].properties.VPU;
                 sum_VSU = sum_VSU + featureCollection.features[i].properties.VSU;
-                sum_VTU = sum_VTU + featureCollection.features[i].properties.VTU;
+                sum_VASU = sum_VASU + featureCollection.features[i].properties.VASU;
             
             } else {
                 cuentaValores++;
                 sum_U = sum_U + featureCollection.features[i].properties.U;
                 sum_VPU = sum_VPU + featureCollection.features[i].properties.VPU;
                 sum_VSU = sum_VSU + featureCollection.features[i].properties.VSU;
-                sum_VTU = sum_VTU + featureCollection.features[i].properties.VTU;
+                sum_VASU = sum_VASU + featureCollection.features[i].properties.VASU;
                 
                 var row = {
                     D: featureCollection.features[i].properties.D,
                     U: sum_U,
                     VPU: sum_VPU,
                     VSU: sum_VSU,
-                    VTU: sum_VTU
+                    VASU: sum_VASU
                 
                 }
                 SumaTotales.Valor = SumaTotales.Valor + sum_VPU;
                 SumaTotales.Beneficiarios = SumaTotales.Beneficiarios + sum_U;
                 LyrDeptoSim = actualizarparametros(LyrDeptoSim, row);
-                sum_U = 0; sum_VPU = 0; sum_VSU = 0; sum_VTU = 0; 
+                sum_U = 0; sum_VPU = 0; sum_VSU = 0; sum_VASU = 0; 
             }
         } else {
             cuentaValores++;
             sum_U = sum_U + featureCollection.features[i].properties.U;
             sum_VPU = sum_VPU + featureCollection.features[i].properties.VPU;
             sum_VSU = sum_VSU + featureCollection.features[i].properties.VSU;
-            sum_VTU = sum_VTU + featureCollection.features[i].properties.VTU;
+            sum_VASU = sum_VASU + featureCollection.features[i].properties.VASU;
             var row = {
                 D: featureCollection.features[i].properties.D,
                 U: sum_U,
                 VPU: sum_VPU,
                 VSU: sum_VSU,
-                VTU: sum_VTU,
+                VASU: sum_VASU,
             }
             SumaTotales.Valor = SumaTotales.Valor + sum_VPU;
             SumaTotales.Beneficiarios = SumaTotales.Beneficiarios + sum_U;
@@ -118,7 +121,7 @@ function calculoDepto(featureCollection, LyrDeptoSim) {
 }
 
 function calculoMpio(featureCollection, LyrMunicipioSim) {
-    var sum_U = 0,  sum_VPU = 0, sum_VSU = 0, sum_VTU = 0,cont = 0, cuentaValores = 0;
+    var sum_U = 0,  sum_VPU = 0, sum_VSU = 0, sum_VASU = 0,cont = 0, cuentaValores = 0;
     SumaTotales.Valor = 0, SumaTotales.Beneficiarios = 0;
     for (var i = 0; i < featureCollection.features.length; i++) {
         if (i != featureCollection.features.length - 1) {
@@ -126,40 +129,40 @@ function calculoMpio(featureCollection, LyrMunicipioSim) {
                 sum_U = sum_U + featureCollection.features[i].properties.U;
                 sum_VPU = sum_VPU + featureCollection.features[i].properties.VPU;
                 sum_VSU = sum_VSU + featureCollection.features[i].properties.VSU;
-                sum_VTU = sum_VTU + featureCollection.features[i].properties.VTU;
+                sum_VASU = sum_VASU + featureCollection.features[i].properties.VASU;
             
             } else {
                 cuentaValores++;
                 sum_U = sum_U + featureCollection.features[i].properties.U;
                 sum_VPU = sum_VPU + featureCollection.features[i].properties.VPU;
                 sum_VSU = sum_VSU + featureCollection.features[i].properties.VSU;
-                sum_VTU = sum_VTU + featureCollection.features[i].properties.VTU;
+                sum_VASU = sum_VASU + featureCollection.features[i].properties.VASU;
                 var row = {
                     D: featureCollection.features[i].properties.D,
                     M: featureCollection.features[i].properties.M,
                     U: sum_U,
                     VPU: sum_VPU,
                     VSU: sum_VSU,
-                    VTU: sum_VTU
+                    VASU: sum_VASU
                 }
                 SumaTotales.Valor = SumaTotales.Valor + sum_VPU;
                 SumaTotales.Beneficiarios = SumaTotales.Beneficiarios + sum_U;
                 LyrMunicipioSim = actualizarparametrosMpio(LyrMunicipioSim, row);
-                sum_U = 0;  sum_VPU = 0; sum_VSU = 0; sum_VTU = 0; 
+                sum_U = 0;  sum_VPU = 0; sum_VSU = 0; sum_VASU = 0; 
             }
         } else {
             cuentaValores++;
             sum_U = sum_U + featureCollection.features[i].properties.U;
             sum_VPU = sum_VPU + featureCollection.features[i].properties.VPU;
             sum_VSU = sum_VSU + featureCollection.features[i].properties.VSU;
-            sum_VTU = sum_VTU + featureCollection.features[i].properties.VTU;
+            sum_VASU = sum_VASU + featureCollection.features[i].properties.VASU;
             var row = {
                 D: featureCollection.features[i].properties.D,
                 M: featureCollection.features[i].properties.M,
                 U: sum_U,
                 VPU: sum_VPU,
                 VSU: sum_VSU,
-                VTU: sum_VTU
+                VASU: sum_VASU
             
             }
             SumaTotales.Valor = SumaTotales.Valor + sum_VPU;
@@ -249,14 +252,14 @@ function getFondosData() {
     }
     $("#panel_superDerecho").hide();
     queryDataFondos
-        .fields(['D', 'M', 'U', 'VPU', 'VSU', 'VTU', 'CON','ES'])
+        .fields(['D', 'M', 'U', 'VPU', 'VSU', 'VASU', 'CON','ES'])
         .orderBy(['D', 'M'])
         .returnGeometry(false);
     whereParametros = getParametros();
     
     queryDataFondos.where(whereParametros).run(function (error, featureCollection, response) {
         
-            if (error == undefined) {
+           if (error == undefined) {
                 CuentaTbs(featureCollection);
                 if ($("#EscalaMap").val() == "Municipio") {
                     var cuentaValores = calculoMpio(featureCollection, LyrMunicipioSim);
@@ -304,7 +307,6 @@ function getDeptoSimp() {
             getFondosData();
         });
     });
-  
 }
 
 
