@@ -46,6 +46,38 @@ function actualizarparametros(feature,row){
     
 
 }
+function calculoDepto(fc, LyrDeptoSim) {
+    var getqueryDistFondos = L.esri.Tasks.query({
+        url: config.dominio + config.urlHostDataFO + 'MapServer/' + config.INDI
+    });
+    getqueryDistFondos.fields(['D'])
+    .orderBy(['D'])
+    .returnGeometry(false);
+    getqueryDistFondos.params.returnDistinctValues = true;
+    whereParametros = getParametros();
+    
+    getqueryDistFondos.where(whereParametros).run(function (error, featureCollection, response) {
+        if (error == undefined) {
+            for (var i = 0; i < featureCollection.features.length; i++) {
+                var filDpto=turf.filter(fc, 'D', featureCollection.features[i].properties.D);
+                var row = {
+                    D: featureCollection.features[i].properties.D,
+                    U: sumCampo(filDpto, 'U'),
+                    VPU: sumCampo(filDpto, 'VPU'),
+                    VSU: sumCampo(filDpto, 'VSU'),
+                    VASU: sumCampo(filDpto, 'VASU'),
+                    CANT: filDpto.features.length
+                }
+                LyrDeptoSim = actualizarparametros(LyrDeptoSim, row);
+            
+            }
+            Limitesleyenda = getBreaks(LyrDeptoSim);
+            legend.addTo(map);
+            MapearProyectosTotal(LyrDeptoSim);
+        }
+    });
+    return fc.features.length; 
+}
 function actualizarparametrosMpio(feature, row) {
     for (var i = 0; i < feature.features.length; i++) {
         //console.log(row.D + "" + row.M);
@@ -63,118 +95,42 @@ function actualizarparametrosMpio(feature, row) {
     return feature;
 
 }
-
-function calculoDepto(featureCollection, LyrDeptoSim) {
-    var cuentaValores = 0;
-    var sum_U = 0, sum_VPU = 0, sum_VSU = 0, sum_VASU = 0,  cont = 0;
-    SumaTotales.Valor = 0, SumaTotales.Beneficiarios = 0;
-    for (var i = 0; i < featureCollection.features.length; i++) {
-        if (i != featureCollection.features.length - 1) {
-            if (featureCollection.features[i].properties.D == featureCollection.features[i + 1].properties.D) {
-                sum_U = sum_U + featureCollection.features[i].properties.U;
-                sum_VPU = sum_VPU + featureCollection.features[i].properties.VPU;
-                sum_VSU = sum_VSU + featureCollection.features[i].properties.VSU;
-                sum_VASU = sum_VASU + featureCollection.features[i].properties.VASU;
+function calculoMpio(fc, LyrMunicipioSim) {
+    var getqueryDistFondos = L.esri.Tasks.query({
+        url: config.dominio + config.urlHostDataFO + 'MapServer/' + config.INDI
+    });
+    getqueryDistFondos.fields(['D', 'M' ])
+    .orderBy(['D', 'M'])
+    .returnGeometry(false);
+    getqueryDistFondos.params.returnDistinctValues = true;
+    whereParametros = getParametros();
+    
+    getqueryDistFondos.where(whereParametros).run(function (error, featureCollection, response) {
+        if (error == undefined) {
+            for (var i = 0; i < featureCollection.features.length; i++) {
+                var filDpto=turf.filter(fc, 'D', featureCollection.features[i].properties.D);
+                var filMun=turf.filter(filDpto, 'M', featureCollection.features[i].properties.M);
             
-            } else {
-                cuentaValores++;
-                sum_U = sum_U + featureCollection.features[i].properties.U;
-                sum_VPU = sum_VPU + featureCollection.features[i].properties.VPU;
-                sum_VSU = sum_VSU + featureCollection.features[i].properties.VSU;
-                sum_VASU = sum_VASU + featureCollection.features[i].properties.VASU;
-                
-                var row = {
-                    D: featureCollection.features[i].properties.D,
-                    U: sum_U,
-                    VPU: sum_VPU,
-                    VSU: sum_VSU,
-                    VASU: sum_VASU
-                
-                }
-                SumaTotales.Valor = SumaTotales.Valor + sum_VPU;
-                SumaTotales.Beneficiarios = SumaTotales.Beneficiarios + sum_U;
-                LyrDeptoSim = actualizarparametros(LyrDeptoSim, row);
-                sum_U = 0; sum_VPU = 0; sum_VSU = 0; sum_VASU = 0; 
-            }
-        } else {
-            cuentaValores++;
-            sum_U = sum_U + featureCollection.features[i].properties.U;
-            sum_VPU = sum_VPU + featureCollection.features[i].properties.VPU;
-            sum_VSU = sum_VSU + featureCollection.features[i].properties.VSU;
-            sum_VASU = sum_VASU + featureCollection.features[i].properties.VASU;
-            var row = {
-                D: featureCollection.features[i].properties.D,
-                U: sum_U,
-                VPU: sum_VPU,
-                VSU: sum_VSU,
-                VASU: sum_VASU,
-            }
-            SumaTotales.Valor = SumaTotales.Valor + sum_VPU;
-            SumaTotales.Beneficiarios = SumaTotales.Beneficiarios + sum_U;
-            LyrDeptoSim = actualizarparametros(LyrDeptoSim, row);
-        }
-
-    }
-    $("#ValorConTotal").empty().append(numeral(SumaTotales.Valor).format('$0,0'));
-    $("#BeneficiariosConTotal").empty().append(numeral(SumaTotales.Beneficiarios).format('0,0'));
-    return cuentaValores;
-}
-
-function calculoMpio(featureCollection, LyrMunicipioSim) {
-    var sum_U = 0,  sum_VPU = 0, sum_VSU = 0, sum_VASU = 0,cont = 0, cuentaValores = 0;
-    SumaTotales.Valor = 0, SumaTotales.Beneficiarios = 0;
-    for (var i = 0; i < featureCollection.features.length; i++) {
-        if (i != featureCollection.features.length - 1) {
-            if (featureCollection.features[i].properties.D == featureCollection.features[i + 1].properties.D && featureCollection.features[i].properties.M == featureCollection.features[i + 1].properties.M) {
-                sum_U = sum_U + featureCollection.features[i].properties.U;
-                sum_VPU = sum_VPU + featureCollection.features[i].properties.VPU;
-                sum_VSU = sum_VSU + featureCollection.features[i].properties.VSU;
-                sum_VASU = sum_VASU + featureCollection.features[i].properties.VASU;
-            
-            } else {
-                cuentaValores++;
-                sum_U = sum_U + featureCollection.features[i].properties.U;
-                sum_VPU = sum_VPU + featureCollection.features[i].properties.VPU;
-                sum_VSU = sum_VSU + featureCollection.features[i].properties.VSU;
-                sum_VASU = sum_VASU + featureCollection.features[i].properties.VASU;
                 var row = {
                     D: featureCollection.features[i].properties.D,
                     M: featureCollection.features[i].properties.M,
-                    U: sum_U,
-                    VPU: sum_VPU,
-                    VSU: sum_VSU,
-                    VASU: sum_VASU
+                    U: sumCampo(filMun, 'U'),
+                    VPU: sumCampo(filMun, 'VPU'),
+                    VSU: sumCampo(filMun, 'VSU'),
+                    VASU: sumCampo(filMun, 'VASU'),
+                    CANT: filMun.features.length
                 }
-                SumaTotales.Valor = SumaTotales.Valor + sum_VPU;
-                SumaTotales.Beneficiarios = SumaTotales.Beneficiarios + sum_U;
                 LyrMunicipioSim = actualizarparametrosMpio(LyrMunicipioSim, row);
-                sum_U = 0;  sum_VPU = 0; sum_VSU = 0; sum_VASU = 0; 
-            }
-        } else {
-            cuentaValores++;
-            sum_U = sum_U + featureCollection.features[i].properties.U;
-            sum_VPU = sum_VPU + featureCollection.features[i].properties.VPU;
-            sum_VSU = sum_VSU + featureCollection.features[i].properties.VSU;
-            sum_VASU = sum_VASU + featureCollection.features[i].properties.VASU;
-            var row = {
-                D: featureCollection.features[i].properties.D,
-                M: featureCollection.features[i].properties.M,
-                U: sum_U,
-                VPU: sum_VPU,
-                VSU: sum_VSU,
-                VASU: sum_VASU
             
             }
-            SumaTotales.Valor = SumaTotales.Valor + sum_VPU;
-            SumaTotales.Beneficiarios = SumaTotales.Beneficiarios + sum_U;
-            LyrMunicipioSim = actualizarparametrosMpio(LyrMunicipioSim, row);
+            Limitesleyenda = getBreaks(LyrMunicipioSim);
+            legend.addTo(map);
+            MapearProyectosTotal(LyrDeptoSim);
         }
-
-    }
-    $("#ValorConTotal").empty().append(numeral(SumaTotales.Valor).format('$0,0'));
-    $("#BeneficiariosConTotal").empty().append(numeral(SumaTotales.Beneficiarios).format('0,0'));
-    return cuentaValores;
+    });
+    return fc.features.length; 
 }
+
 function getMultiSelect(id) {
     var brands = $('#' + id + ' option:selected');
     var selection = [];
@@ -204,16 +160,21 @@ function getParametros() {
     return where;
 }
 
-function getBreaks(cuentaValores,Lyr) {
+function getBreaks(Lyr) {
     var breaks;
+    console.log(Lyr);
     var lyrTemp = turf.remove(Lyr, 'VPU', 0);
+    var cuentaValores = lyrTemp.features.length;
+    console.log(lyrTemp);
     if (cuentaValores > 8) {
-        breaks = turf.jenks(lyrTemp, 'VPU', 8);
+        console.log(cuentaValores);
+        breaks = turf.jenks(Lyr, 'VPU', 4);
+        console.log(breaks);
     } else {
-        breaks = turf.jenks(lyrTemp, 'VPU', cuentaValores);
+        breaks = turf.jenks(Lyr, 'VPU', cuentaValores-1);
     }
-
-    var breaks=breaks.unique();
+    console.log(breaks);
+    breaks=breaks.unique();
     if (breaks[0] != 0) {
         breaks.unshift(0);
     }
@@ -221,15 +182,19 @@ function getBreaks(cuentaValores,Lyr) {
     return breaks;
 }
 function sumCampo(fc, campo) {
-    var sum_U = 0;
+    var sum_Campo = 0;
     for (var i = 0; i < fc.features.length; i++) {
-        sum_U = sum_U + fc.features[i].properties[campo];
+        sum_Campo = sum_Campo + fc.features[i].properties[campo];
     }
-    return sum_U;
+    return sum_Campo;
 }
 
 function CuentaTbs(featureCollection) {
     $('#CantProyConTotal').empty().append(numeral(featureCollection.features.length).format('0,0'));
+    var ValorTotal =  sumCampo(featureCollection, 'VPU');
+    $("#ValorConTotal").empty().append(numeral(ValorTotal).format('$0,0'));
+    var BeneficiarioTotal = sumCampo(featureCollection, 'U');
+    $("#BeneficiariosConTotal").empty().append(numeral(BeneficiarioTotal).format('0,0'));
     var fcFavorable = turf.filter(featureCollection, 'CON', 'Favorable');
     var TotalFavorable = sumCampo(fcFavorable, 'VSU');
     $('#lbValorFav').empty().append(numeral(TotalFavorable).format('$0,0'));
@@ -237,11 +202,13 @@ function CuentaTbs(featureCollection) {
     $('#lbBeneficiariosFav').empty().append(numeral(BeneFavorable).format('0,0'));
     $('#lbCantProyFav').empty().append(numeral(fcFavorable.features.length).format('0,0'));
     var fcAsig = turf.filter(fcFavorable, 'ES', 'Con asignación de recursos');
-    var TotalAsig = sumCampo(fcAsig, 'VPU');
+    var TotalAsig = sumCampo(fcAsig, 'VASU');
     $('#lbValorAsig').empty().append(numeral(TotalAsig).format('$0,0'));
     var BeneAsig = sumCampo(fcAsig, 'U');
     $('#lbBeneficiarioAsig').empty().append(numeral(BeneAsig).format('0,0'));
     $('#lbCantProyoAsig').empty().append(numeral(fcAsig.features.length).format('0,0'));
+
+   
 }
 function getFondosData() {
     waitingDialog.show();
@@ -251,33 +218,27 @@ function getFondosData() {
         agregarparametros(LyrDeptoSim);
     }
     $("#panel_superDerecho").hide();
-    queryDataFondos
-        .fields(['D', 'M', 'U', 'VPU', 'VSU', 'VASU', 'CON','ES'])
+
+    var getqueryDataFondos = L.esri.Tasks.query({
+        url: config.dominio + config.urlHostDataFO + 'MapServer/' + config.INDI
+    });
+    getqueryDataFondos
+        .fields(['D', 'M', 'U', 'VPU', 'VSU', 'VASU', 'CON', 'ES', 'FEA'])
         .orderBy(['D', 'M'])
         .returnGeometry(false);
     whereParametros = getParametros();
     
-    queryDataFondos.where(whereParametros).run(function (error, featureCollection, response) {
-        
-           if (error == undefined) {
-                CuentaTbs(featureCollection);
+    getqueryDataFondos.where(whereParametros).run(function (error, fc, response) {
+          if (error == undefined) {
+                CuentaTbs(fc);
                 if ($("#EscalaMap").val() == "Municipio") {
-                    var cuentaValores = calculoMpio(featureCollection, LyrMunicipioSim);
-                    Limitesleyenda = getBreaks(cuentaValores, LyrMunicipioSim);
-                    legend.addTo(map);
-                    MapearProyectosTotal(LyrMunicipioSim);
-
+                    var cuentaValores = calculoMpio(fc, LyrMunicipioSim);
                 } else {
-                    var cuentaValores = calculoDepto(featureCollection, LyrDeptoSim);
-                    
-                    Limitesleyenda = getBreaks(cuentaValores, LyrDeptoSim);
-                    legend.addTo(map);
-                    MapearProyectosTotal(LyrDeptoSim);
+                    var cuentaValores = calculoDepto(fc, LyrDeptoSim);
                 }
             } else {
                 if ($("#EscalaMap").val() == "Municipio") {
                     MapearProyectosTotal(LyrMunicipioSim);
-
                 } else {
                     MapearProyectosTotal(LyrDeptoSim);
                 }

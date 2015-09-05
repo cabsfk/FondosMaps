@@ -19,18 +19,18 @@ var lyrTotalProyectos;
         }
 
 
-        if(SumaTotales.Beneficiarios!=0){
+        if (feature.properties.VPU != 0) {
             var textlabel = '<h6>' + nombre + '</h6>' +
           '<small class="text-muted">Valor Corriente: </small>' + numeral(feature.properties.VPU).format('$0,0') + '<br>' +
           '<small class="text-muted">Valor Costante: </small>' + '<br>' +
           '<small class="text-muted">Valor Solicitado: </small>' + numeral(feature.properties.VSU).format('$0,0') + '<br>' +
           '<small class="text-muted">Valor Asignado: </small>' + numeral(feature.properties.VAU).format('$0,0') + '<br>' +
-          '<small class="text-muted">Beneficiados: </small>' + numeral(feature.properties.U).format('0,0')+
-          '<small class="text-muted">Cantidad proyectos: </small>' + numeral(feature.properties.U).format('0,0')
+          '<small class="text-muted">Beneficiados: </small>' + numeral(feature.properties.U).format('0,0') + '<br>' +
+          '<small class="text-muted">Cantidad proyectos: </small>' + numeral(feature.properties.CANT).format('0,0')
           ;
 
         }else{
-            var textlabel = '<h4> <p class="text-info">' + nombre + '</p></h4>';
+            var textlabel = '<h6>' + nombre + '</h6>';
         }
         
         layer.bindLabel( textlabel,

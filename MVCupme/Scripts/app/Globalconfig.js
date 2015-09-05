@@ -18,7 +18,9 @@ glo = {
     SectoFo: '',
     filtroSectoFo: '',
     ConEst: '',
-    filtroConEst: ''
+    filtroConEst: '',
+
+
 }
 var SumaTotales = { Valor: 0, Beneficiarios: 0 };
 /***********************************

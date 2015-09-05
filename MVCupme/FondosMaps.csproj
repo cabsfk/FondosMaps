@@ -638,9 +638,9 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>63944</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/FondosProy</IISUrl>
+          <IISUrl>http://localhost/FondosMaps</IISUrl>
           <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
-          <IISAppRootUrl>http://localhost/FondosProy</IISAppRootUrl>
+          <IISAppRootUrl>http://localhost/FondosMaps</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
