@@ -21,10 +21,13 @@ var lyrTotalProyectos;
 
         if (feature.properties.VPU != 0) {
             var textlabel = '<h6>' + nombre + '</h6>' +
-          '<small class="text-muted">Valor Corriente: </small>' + numeral(feature.properties.VPU).format('$0,0') + '<br>' +
-          '<small class="text-muted">Valor Costante: </small>' + '<br>' +
-          '<small class="text-muted">Valor Solicitado: </small>' + numeral(feature.properties.VSU).format('$0,0') + '<br>' +
-          '<small class="text-muted">Valor Asignado: </small>' + numeral(feature.properties.VAU).format('$0,0') + '<br>' +
+          '<small class="text-muted">Valor : </small>' + numeral(feature.properties.VT).format('$0,0') + '<br>' +
+          '<small class="text-muted">Valor Total Corriente: </small>' + numeral(feature.properties.VPU).format('$0,0') + '<br>' +
+          '<small class="text-muted">Valor Total Costante: </small>' + numeral(feature.properties.VPUA).format('$0,0') + '<br>' +
+          '<small class="text-muted">Valor Solicitado Corriente: </small>' + numeral(feature.properties.VSU).format('$0,0') + '<br>' +
+          '<small class="text-muted">Valor Solicitado Constante: </small>' + numeral(feature.properties.VSUA).format('$0,0') + '<br>' +
+          '<small class="text-muted">Valor Asignado Corriente: </small>' + numeral(feature.properties.VASU).format('$0,0') + '<br>' +
+          '<small class="text-muted">Valor Asignado Constante: </small>' + numeral(feature.properties.VASUA).format('$0,0') + '<br>' +
           '<small class="text-muted">Beneficiados: </small>' + numeral(feature.properties.U).format('0,0') + '<br>' +
           '<small class="text-muted">Cantidad proyectos: </small>' + numeral(feature.properties.CANT).format('0,0')
           ;
@@ -45,7 +48,7 @@ var lyrTotalProyectos;
 				color: 'white',
 				dashArray: '3',
 				fillOpacity: 0.7,
-				fillColor: getColor(feature.properties.VPU)
+				fillColor: getColor(feature.properties.VT)
 			};
 		}
 

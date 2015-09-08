@@ -19,7 +19,7 @@ glo = {
     filtroSectoFo: '',
     ConEst: '',
     filtroConEst: '',
-
+    tituloLeyenda:''
 
 }
 var SumaTotales = { Valor: 0, Beneficiarios: 0 };
@@ -85,7 +85,7 @@ legend.onAdd = function (map) {
        labels = [];
 
     // loop through our density intervals and generate a label with a colored square for each interval
-    div.innerHTML += '<b>Valor Total </b><br>';
+    div.innerHTML += '<b>Valor ' + glo.tituloLeyenda + '</b><br>';
 
     for (var i = 0; i < Limitesleyenda.length; i++) {
         if (i == 0) {
@@ -308,7 +308,12 @@ query_ConEst.run(function (error, featureCollection) {
    
 });
 
-
+var day = moment(1440651600000).format('DD-MM-YYYY');
+console.log(day);
+var day = moment(-62135596800000).format('DD-MM-YYYY');
+console.log(day);
+var day = moment(1440651600000).format('DD-MM-YYYY');
+console.log(day);
 
 function getSelectFO(values) {
     

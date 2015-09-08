@@ -23,6 +23,10 @@ function agregarparametros(feature){
         feature.features[i].properties.VPU = 0;
         feature.features[i].properties.VSU = 0;
         feature.features[i].properties.VASU = 0;
+        feature.features[i].properties.VPUA = 0;
+        feature.features[i].properties.VSUA = 0;
+        feature.features[i].properties.VASUA = 0;
+        feature.features[i].properties.VT = 0;
         feature.features[i].properties.CANT = 0;
     }
     return feature;
@@ -37,6 +41,10 @@ function actualizarparametros(feature,row){
             feature.features[i].properties.VPU = row.VPU;
             feature.features[i].properties.VSU = row.VSU;
             feature.features[i].properties.VASU = row.VASU;
+            feature.features[i].properties.VPUA = row.VPUA;
+            feature.features[i].properties.VSUA = row.VSUA;
+            feature.features[i].properties.VASUA = row.VASUA;
+            feature.features[i].properties.VT = row.VT;
             feature.features[i].properties.CANT = row.CANT;
             
             return feature;
@@ -66,6 +74,10 @@ function calculoDepto(fc, LyrDeptoSim) {
                     VPU: sumCampo(filDpto, 'VPU'),
                     VSU: sumCampo(filDpto, 'VSU'),
                     VASU: sumCampo(filDpto, 'VASU'),
+                    VPUA: sumCampo(filDpto, 'VPUA'),
+                    VSUA: sumCampo(filDpto, 'VSUA'),
+                    VASUA: sumCampo(filDpto, 'VASUA'),
+                    VT: sumCampo(filDpto, 'VT'),
                     CANT: filDpto.features.length
                 }
                 LyrDeptoSim = actualizarparametros(LyrDeptoSim, row);
@@ -87,6 +99,10 @@ function actualizarparametrosMpio(feature, row) {
             feature.features[i].properties.VPU = row.VPU;
             feature.features[i].properties.VSU = row.VSU;
             feature.features[i].properties.VASU = row.VASU;
+            feature.features[i].properties.VPUA = row.VPUA;
+            feature.features[i].properties.VSUA = row.VSUA;
+            feature.features[i].properties.VASUA = row.VASUA;
+            feature.features[i].properties.VT = row.VT;
             feature.features[i].properties.CANT = row.CANT;
             return feature;
         }
@@ -118,6 +134,10 @@ function calculoMpio(fc, LyrMunicipioSim) {
                     VPU: sumCampo(filMun, 'VPU'),
                     VSU: sumCampo(filMun, 'VSU'),
                     VASU: sumCampo(filMun, 'VASU'),
+                    VPUA: sumCampo(filMun, 'VPUA'),
+                    VSUA: sumCampo(filMun, 'VSUA'),
+                    VASUA: sumCampo(filMun, 'VASUA'),
+                    VT: sumCampo(filMun, 'VT'),
                     CANT: filMun.features.length
                 }
                 LyrMunicipioSim = actualizarparametrosMpio(LyrMunicipioSim, row);
@@ -125,7 +145,7 @@ function calculoMpio(fc, LyrMunicipioSim) {
             }
             Limitesleyenda = getBreaks(LyrMunicipioSim);
             legend.addTo(map);
-            MapearProyectosTotal(LyrDeptoSim);
+            MapearProyectosTotal(LyrMunicipioSim);
         }
     });
     return fc.features.length; 
@@ -148,6 +168,16 @@ function getParametros() {
     var SelctSectores = getMultiSelect('SelctSectores');
     var SelctEstado = getMultiSelect('SelctEstado');
     var SelctConcepto = getMultiSelect('SelctConcepto');
+    console.log(SelctEstado[0]);
+    if (SelctConcepto[0] == "'Favorable'") {
+        if (SelctEstado[0] == "'Con asignación de recursos'") {
+            glo.tituloLeyenda = 'Asignado';
+        } else {
+            glo.tituloLeyenda = 'Solicitado';
+        }
+    } else {
+        glo.tituloLeyenda = 'Proyecto';
+    }
     var params = "";
     params = SelctFondo.length == 0 ? params : params + ' and  FO IN (' + SelctFondo.join(',') + ")";
     params = SelctSectores.length == 0 ? params : params + ' and  SEC IN (' + SelctSectores.join(',') + ")";
@@ -162,53 +192,56 @@ function getParametros() {
 
 function getBreaks(Lyr) {
     var breaks;
-    console.log(Lyr);
-    var lyrTemp = turf.remove(Lyr, 'VPU', 0);
+    
+    var lyrTemp = turf.remove(Lyr, 'VT', 0);
     var cuentaValores = lyrTemp.features.length;
-    console.log(lyrTemp);
+    
     if (cuentaValores > 8) {
         console.log(cuentaValores);
-        breaks = turf.jenks(Lyr, 'VPU', 4);
+        breaks = turf.jenks(Lyr, 'VT', 4);
         console.log(breaks);
     } else {
-        breaks = turf.jenks(Lyr, 'VPU', cuentaValores-1);
-    }
-    console.log(breaks);
-    breaks=breaks.unique();
-    if (breaks[0] != 0) {
-        breaks.unshift(0);
+        breaks = turf.jenks(Lyr, 'VT', cuentaValores);
     }
     
+    breaks=breaks.unique();
+    if (breaks[0] != 0) {
+        breaks.unshift(1);
+        breaks.unshift(0);
+    } else {
+        breaks[0]=1;
+        breaks.unshift(0);
+    }
+    waitingDialog.hide();
     return breaks;
 }
 function sumCampo(fc, campo) {
     var sum_Campo = 0;
     for (var i = 0; i < fc.features.length; i++) {
         sum_Campo = sum_Campo + fc.features[i].properties[campo];
+        
     }
     return sum_Campo;
 }
 
 function CuentaTbs(featureCollection) {
     $('#CantProyConTotal').empty().append(numeral(featureCollection.features.length).format('0,0'));
-    var ValorTotal =  sumCampo(featureCollection, 'VPU');
+    var ValorTotal =  sumCampo(featureCollection, 'VT');
     $("#ValorConTotal").empty().append(numeral(ValorTotal).format('$0,0'));
     var BeneficiarioTotal = sumCampo(featureCollection, 'U');
     $("#BeneficiariosConTotal").empty().append(numeral(BeneficiarioTotal).format('0,0'));
     var fcFavorable = turf.filter(featureCollection, 'CON', 'Favorable');
-    var TotalFavorable = sumCampo(fcFavorable, 'VSU');
+    var TotalFavorable = sumCampo(fcFavorable, 'VT');
     $('#lbValorFav').empty().append(numeral(TotalFavorable).format('$0,0'));
     var BeneFavorable = sumCampo(fcFavorable, 'U');
     $('#lbBeneficiariosFav').empty().append(numeral(BeneFavorable).format('0,0'));
     $('#lbCantProyFav').empty().append(numeral(fcFavorable.features.length).format('0,0'));
     var fcAsig = turf.filter(fcFavorable, 'ES', 'Con asignación de recursos');
-    var TotalAsig = sumCampo(fcAsig, 'VASU');
+    var TotalAsig = sumCampo(fcAsig, 'VT');
     $('#lbValorAsig').empty().append(numeral(TotalAsig).format('$0,0'));
     var BeneAsig = sumCampo(fcAsig, 'U');
     $('#lbBeneficiarioAsig').empty().append(numeral(BeneAsig).format('0,0'));
     $('#lbCantProyoAsig').empty().append(numeral(fcAsig.features.length).format('0,0'));
-
-   
 }
 function getFondosData() {
     waitingDialog.show();
@@ -223,7 +256,7 @@ function getFondosData() {
         url: config.dominio + config.urlHostDataFO + 'MapServer/' + config.INDI
     });
     getqueryDataFondos
-        .fields(['D', 'M', 'U', 'VPU', 'VSU', 'VASU', 'CON', 'ES', 'FEA'])
+        .fields(['D', 'M', 'U', 'VPU', 'VPUA', 'VSU', 'VSUA', 'VASU', 'VASUA', 'CON', 'ES', 'FEA', 'FE', 'VT', 'FECHA'])
         .orderBy(['D', 'M'])
         .returnGeometry(false);
     whereParametros = getParametros();
@@ -246,7 +279,7 @@ function getFondosData() {
             if ($("#textlegend").text() == "Mostrar") {
                 $(".legend").hide();
             }
-            waitingDialog.hide();
+           
             
     });
 }
