@@ -172,11 +172,15 @@ function getParametros() {
     if (SelctConcepto[0] == "'Favorable'") {
         if (SelctEstado[0] == "'Con asignación de recursos'") {
             glo.tituloLeyenda = 'Asignado';
+            glo.VarMapeo = 'VASUA';
+            
         } else {
             glo.tituloLeyenda = 'Solicitado';
+            glo.VarMapeo = 'VSUA';            
         }
     } else {
         glo.tituloLeyenda = 'Proyecto';
+        glo.VarMapeo = 'VPUA';
     }
     var params = "";
     params = SelctFondo.length == 0 ? params : params + ' and  FO IN (' + SelctFondo.join(',') + ")";

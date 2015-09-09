@@ -21,9 +21,9 @@ var lyrTotalProyectos;
 
         if (feature.properties.VPU != 0) {
             var textlabel = '<h6>' + nombre + '</h6>' +
-          '<small class="text-muted">Valor : </small>' + numeral(feature.properties.VT).format('$0,0') + '<br>' +
-          '<small class="text-muted">Valor Total Corriente: </small>' + numeral(feature.properties.VPU).format('$0,0') + '<br>' +
-          '<small class="text-muted">Valor Total Costante: </small>' + numeral(feature.properties.VPUA).format('$0,0') + '<br>' +
+          '<small class="text-muted">Mapeado por Valor ' + glo.tituloLeyenda + ' Constante</small>.<br>' +
+          '<small class="text-muted">Valor Proyecto Corriente: </small>' + numeral(feature.properties.VPU).format('$0,0') + '<br>' +
+          '<small class="text-muted">Valor Proyecto Costante: </small>' + numeral(feature.properties.VPUA).format('$0,0') + '<br>' +
           '<small class="text-muted">Valor Solicitado Corriente: </small>' + numeral(feature.properties.VSU).format('$0,0') + '<br>' +
           '<small class="text-muted">Valor Solicitado Constante: </small>' + numeral(feature.properties.VSUA).format('$0,0') + '<br>' +
           '<small class="text-muted">Valor Asignado Corriente: </small>' + numeral(feature.properties.VASU).format('$0,0') + '<br>' +
@@ -48,7 +48,7 @@ var lyrTotalProyectos;
 				color: 'white',
 				dashArray: '3',
 				fillOpacity: 0.7,
-				fillColor: getColor(feature.properties.VT)
+				fillColor: getColor(feature.properties[glo.VarMapeo])
 			};
 		}
 

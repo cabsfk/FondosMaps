@@ -19,7 +19,10 @@ glo = {
     filtroSectoFo: '',
     ConEst: '',
     filtroConEst: '',
-    tituloLeyenda:''
+    tituloLeyenda: '',
+    VarMapeo: '',
+    pieConcepto: '',
+    pieEstado: ''
 
 }
 var SumaTotales = { Valor: 0, Beneficiarios: 0 };
@@ -90,8 +93,11 @@ legend.onAdd = function (map) {
     for (var i = 0; i < Limitesleyenda.length; i++) {
         if (i == 0) {
             div.innerHTML +=
-            '<i style="background:' + getColor(Limitesleyenda[i] + 1) + '"></i> ' +
+            '<i style="background:rgba(255,255,255,0.8)"></i> ' +
             numeral(Limitesleyenda[i]).format('$0,0')  +'&ndash;' + '<br>' ;
+        } else if ((i+1) == Limitesleyenda.length) {
+            div.innerHTML +=
+            '<i style="background:' + getColor(Limitesleyenda[i] + 1) + '"></i> ' +  numeral(Limitesleyenda[i]).format('$0,0') +  ' +  <br>';
         } else {
             div.innerHTML +=
             '<i style="background:' + getColor(Limitesleyenda[i] + 1) + '"></i> ' +
@@ -308,12 +314,7 @@ query_ConEst.run(function (error, featureCollection) {
    
 });
 
-var day = moment(1440651600000).format('DD-MM-YYYY');
-console.log(day);
-var day = moment(-62135596800000).format('DD-MM-YYYY');
-console.log(day);
-var day = moment(1440651600000).format('DD-MM-YYYY');
-console.log(day);
+
 
 function getSelectFO(values) {
     

@@ -68,7 +68,7 @@ namespace MVCupme.Controllers
 
             return View();
         }
-        public ActionResult Crear()
+        public ActionResult Proyectos()
         {
             ViewBag.Message = "Pagina de mapa.";
 

@@ -36,6 +36,8 @@ namespace MVCupme
                       "~/Scripts/libs/Multi/js/bootstrap-multiselect.js",
                       "~/Scripts/libs/highcharts/highcharts.js",
                       "~/Scripts/libs/highcharts/modules/exporting.js",
+                      "~/Scripts/libs/highcharts/modules/data.js",
+                      "~/Scripts/libs/highcharts/modules/drilldown.js",
                       "~/Scripts/libs/waitingDialog/waitingDialog.js"
                       ));
 

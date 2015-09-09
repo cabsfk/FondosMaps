@@ -17,8 +17,7 @@ function pie(arrayJsonFondos, idContainer, nombre) {
     } else {
         $("#panel_superDerecho").hide();
     }
-    
-    $('#' + idContainer).highcharts({
+    var confPie = {
         chart: {
             plotBackgroundColor: null,
             plotBorderWidth: null,
@@ -29,14 +28,14 @@ function pie(arrayJsonFondos, idContainer, nombre) {
             text: nombre,
             style: { "color": "#333333", "fontSize": "16px" }
         },
-		subtitle: {	
-			text:   ''
-		},
-		credits: {
-		    text: 'FONDOS-UPME',
-		    href: 'http://www.upme.gov.co'
-		},
-		tooltip: {
+        subtitle: {
+            text: ''
+        },
+        credits: {
+            text: 'FONDOS-UPME',
+            href: 'http://www.upme.gov.co'
+        },
+        tooltip: {
             pointFormat: '<b>${point.y}</b><br><b>{point.percentage:.1f}%</b>'
         },
         plotOptions: {
@@ -56,7 +55,17 @@ function pie(arrayJsonFondos, idContainer, nombre) {
             colorByPoint: true,
             data: arrayJsonFondos
         }]
-    });
+    };
+    if (idContainer == 'containerConcepto') {
+        confPie.drilldown = new Object();
+        //confPie.drilldown.drillUpButton = 'Regresar al CONCEPTO';
+        confPie.drilldown.series = glo.pieEstado;
+        confPie.subtitle.text = 'Concepto/Estado';
+        
+        console.log(confPie);
+    }
+    
+    $('#' + idContainer).highcharts(confPie);
 }
 
 function getFondos(cod_dept, cod_mpio,nombre) {
@@ -72,8 +81,8 @@ function getFondos(cod_dept, cod_mpio,nombre) {
 
     getFondoDataPie(where, 'FO', arrayFondos,nombre);
     getFondoDataPie(where, 'SEC', arraySectores,nombre);
-   // getFondoDataPie(where, 'ES', arrayEstado,nombre);
-    getFondoDataPie(where, 'CON', arrayConcepto, nombre);
+    getFondoDataPie(where, 'ES', arrayEstado,nombre);
+    
 }
 
 function getFondoDataPie(where, idGrupo, array, nombre) {
@@ -81,43 +90,130 @@ function getFondoDataPie(where, idGrupo, array, nombre) {
     var queryDataPie = L.esri.Tasks.query({
         url: config.dominio + config.urlHostDataFO + 'MapServer/' + config.INDI
     });
-
+    var fields;
+    if (idGrupo == 'ES') {
+        fields = [glo.VarMapeo,'CON', idGrupo]
+    } else {
+        fields = [glo.VarMapeo, idGrupo]
+    }
     queryDataPie
-       .fields(['VPU', idGrupo])
+       .fields(fields)
        .orderBy([idGrupo])
        .returnGeometry(false);
        queryDataPie.where(where).run(function (error, featureCollection, response) {
-        var sum_VPU = 0;
-        for (var i = 0; i < featureCollection.features.length; i++) {
-            if (i != featureCollection.features.length - 1) {
-                if (featureCollection.features[i].properties[idGrupo] == featureCollection.features[i + 1].properties[idGrupo]) {
-                    sum_VPU = sum_VPU + featureCollection.features[i].properties.VPU;
-                } else {
-                    sum_VPU = sum_VPU + featureCollection.features[i].properties.VPU;
-                    var row = {
-                        name: array[featureCollection.features[i].properties[idGrupo]],
-                        y: sum_VPU
-                    };
-                    arrayJsonFondos.push(row);
-                    var sum_VPU = 0;
-                }
+           
+            if (idGrupo == 'FO') {
+                arrayJsonFondos = GetArrayPie(featureCollection, idGrupo, array);
+                pie(arrayJsonFondos, 'containerFondos', nombre);
+            } else if (idGrupo == 'SEC') {
+                arrayJsonFondos = GetArrayPie(featureCollection, idGrupo, array);
+                pie(arrayJsonFondos, 'containerSectores', nombre);
+            } else if (idGrupo == 'ES') {
+                arrayJsonFondos = GetArrayPieES(featureCollection, idGrupo, array);
+                glo.pieEstado = arrayJsonFondos;
+                getFondoDataPie(where, 'CON', arrayConcepto, nombre);
+            } else if (idGrupo == 'CON') {
+                arrayJsonFondos = GetArrayPieCON(featureCollection, idGrupo, array);
+                pie(arrayJsonFondos, 'containerConcepto', nombre);
+            }
+    });
+}
+
+
+function GetArrayPie(featureCollection, idGrupo, array) {
+    var sum_VPU = 0;
+    var arrayJsonFondos = [];
+    for (var i = 0; i < featureCollection.features.length; i++) {
+        if (i != featureCollection.features.length - 1) {
+            if (featureCollection.features[i].properties[idGrupo] == featureCollection.features[i + 1].properties[idGrupo]) {
+                sum_VPU = sum_VPU + featureCollection.features[i].properties[glo.VarMapeo];
             } else {
-                sum_VPU = sum_VPU + featureCollection.features[i].properties.VPU;
+                sum_VPU = sum_VPU + featureCollection.features[i].properties[glo.VarMapeo];
                 var row = {
                     name: array[featureCollection.features[i].properties[idGrupo]],
                     y: sum_VPU
                 };
                 arrayJsonFondos.push(row);
+                var sum_VPU = 0;
             }
+        } else {
+            sum_VPU = sum_VPU + featureCollection.features[i].properties[glo.VarMapeo];
+            var row = {
+                name: array[featureCollection.features[i].properties[idGrupo]],
+                y: sum_VPU
+            };
+            arrayJsonFondos.push(row);
         }
-        if (idGrupo == 'FO') {
-            pie(arrayJsonFondos, 'containerFondos', nombre);
-        } else if (idGrupo == 'SEC') {
-            pie(arrayJsonFondos, 'containerSectores', nombre);
-        } else if (idGrupo == 'ES') {
-            pie(arrayJsonFondos, 'containerEstado', nombre);
-        } else if (idGrupo == 'CON') {
-            pie(arrayJsonFondos, 'containerConcepto', nombre);
+    }
+    return arrayJsonFondos;
+}
+function GetArrayPieES(featureCollection, idGrupo, array) {
+    var sum_VPU = 0;
+    var arrayJsonFondos = [], arrayObjet = [];
+    for (var i = 0; i < featureCollection.features.length; i++) {
+        if (i != featureCollection.features.length - 1) {
+            if (featureCollection.features[i].properties[idGrupo] == featureCollection.features[i + 1].properties[idGrupo]) {
+                sum_VPU = sum_VPU + featureCollection.features[i].properties[glo.VarMapeo];
+            } else {
+                sum_VPU = sum_VPU + featureCollection.features[i].properties[glo.VarMapeo];
+                var row = [
+                   array[featureCollection.features[i].properties[idGrupo]], sum_VPU
+                ];
+                arrayJsonFondos.push(row);
+
+                arrayObjet.push({
+                    name:featureCollection.features[i].properties['CON'] ,
+                    id: featureCollection.features[i].properties['CON'] ,
+                    data: arrayJsonFondos
+                });
+                arrayJsonFondos = [];
+                var sum_VPU = 0;
+            }
+        } else {
+            sum_VPU = sum_VPU + featureCollection.features[i].properties[glo.VarMapeo];
+            var row = [
+                   array[featureCollection.features[i].properties[idGrupo]], sum_VPU
+            ];
+            arrayJsonFondos.push(row);
+            arrayObjet.push({
+                name: featureCollection.features[i].properties['CON'],
+                id: featureCollection.features[i].properties['CON'],
+                data: arrayJsonFondos
+            });
+            arrayJsonFondos = [];
         }
-    });
+    }
+
+    console.log(arrayObjet);
+    return arrayObjet;
+}
+
+function GetArrayPieCON(featureCollection, idGrupo, array) {
+    var sum_VPU = 0;
+    var arrayJsonFondos = [];
+    for (var i = 0; i < featureCollection.features.length; i++) {
+        if (i != featureCollection.features.length - 1) {
+            if (featureCollection.features[i].properties[idGrupo] == featureCollection.features[i + 1].properties[idGrupo]) {
+                sum_VPU = sum_VPU + featureCollection.features[i].properties[glo.VarMapeo];
+            } else {
+                sum_VPU = sum_VPU + featureCollection.features[i].properties[glo.VarMapeo];
+                var row = {
+                    name: array[featureCollection.features[i].properties[idGrupo]],
+                    y: sum_VPU,
+                    drilldown: array[featureCollection.features[i].properties[idGrupo]]
+                };
+                arrayJsonFondos.push(row);
+                var sum_VPU = 0;
+            }
+        } else {
+            sum_VPU = sum_VPU + featureCollection.features[i].properties[glo.VarMapeo];
+            var row = {
+                name: array[featureCollection.features[i].properties[idGrupo]],
+                y: sum_VPU,
+                drilldown: array[featureCollection.features[i].properties[idGrupo]]
+            };
+            arrayJsonFondos.push(row);
+        }
+    }
+    return arrayJsonFondos;
 }

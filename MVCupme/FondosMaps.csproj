@@ -597,6 +597,7 @@
     <Content Include="Scripts\libs\select-bootstrap\css\bootstrap-select.css.map" />
     <Content Include="Scripts\libs\select-bootstrap\js\bootstrap-select.js.map" />
     <Content Include="Scripts\libs\BootstrapDialog\less\bootstrap-dialog.less" />
+    <Content Include="Views\Home\Proyectos.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
