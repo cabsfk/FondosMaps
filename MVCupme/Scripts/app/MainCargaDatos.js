@@ -241,19 +241,25 @@ function sumCampo(fc, campo) {
 
 function CuentaTbs(featureCollection) {
     $('#CantProyConTotal').empty().append(numeral(featureCollection.features.length).format('0,0'));
-    var ValorTotal =  sumCampo(featureCollection, 'VT');
+    var ValorTotal = sumCampo(featureCollection, 'VPU');
     $("#ValorConTotal").empty().append(numeral(ValorTotal).format('$0,0'));
+    ValorTotal = sumCampo(featureCollection, 'VPUA');
+    $("#ValorConTotalCons").empty().append(numeral(ValorTotal).format('$0,0'));
     var BeneficiarioTotal = sumCampo(featureCollection, 'U');
     $("#BeneficiariosConTotal").empty().append(numeral(BeneficiarioTotal).format('0,0'));
     var fcFavorable = turf.filter(featureCollection, 'CON', 'Favorable');
-    var TotalFavorable = sumCampo(fcFavorable, 'VT');
+    var TotalFavorable = sumCampo(fcFavorable, 'VSU');
     $('#lbValorFav').empty().append(numeral(TotalFavorable).format('$0,0'));
+    TotalFavorable = sumCampo(fcFavorable, 'VSUA');
+    $('#lbValorFavCons').empty().append(numeral(TotalFavorable).format('$0,0'));
     var BeneFavorable = sumCampo(fcFavorable, 'U');
     $('#lbBeneficiariosFav').empty().append(numeral(BeneFavorable).format('0,0'));
     $('#lbCantProyFav').empty().append(numeral(fcFavorable.features.length).format('0,0'));
     var fcAsig = turf.filter(fcFavorable, 'ES', 'Con asignación de recursos');
-    var TotalAsig = sumCampo(fcAsig, 'VT');
+    var TotalAsig = sumCampo(fcAsig, 'VASU');
     $('#lbValorAsig').empty().append(numeral(TotalAsig).format('$0,0'));
+    TotalAsig = sumCampo(fcAsig, 'VASUA');
+    $('#lbValorAsigCons').empty().append(numeral(TotalAsig).format('$0,0'));
     var BeneAsig = sumCampo(fcAsig, 'U');
     $('#lbBeneficiarioAsig').empty().append(numeral(BeneAsig).format('0,0'));
     $('#lbCantProyoAsig').empty().append(numeral(fcAsig.features.length).format('0,0'));
