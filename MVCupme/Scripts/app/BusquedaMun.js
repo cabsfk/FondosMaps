@@ -1,10 +1,8 @@
 ﻿
 //Definicion de layers
 
-var LyrMunicipio, LyrMunicipio;
-var ServiceDaneFind = L.esri.Tasks.find({
-    url: config.dominio + config.urlHostDP + 'MapServer'
-});
+var LyrMunicipioDpto
+
 
 /*
 Busqueda Por Municipio!!!
@@ -12,31 +10,42 @@ Busqueda Por Municipio!!!
 $("#city").autocomplete({
     source: function (request, response) {
         $("#BtnBusquedaMun").empty().append("<span class='glyphicon glyphicon-repeat'></span>").removeClass("btn-default").addClass("btn-warning");
-        ServiceDaneFind.layers('0').text(request.term).fields('MPIO_CNMBRSA,MPIO_CNMBR');
-        // ServiceDaneFind.params.layerDefs ="1:CLASE='3'";
-
-        ServiceDaneFind.run(function (error, featureCollection, response2) {
-            console.log(featureCollection);
-            $("#BtnBusquedaMun").empty().append("<span class='glyphicon glyphicon-search'></span>").removeClass("btn-warning").addClass("btn-default");
-            response($.map(featureCollection.features, function (el) {
-                return {
-                    label: el.properties.MPIO_CNMBR + " - " + el.properties.DPTO_CNMBR,
-                    value: el.properties.MPIO_CNMBR + " - " + el.properties.DPTO_CNMBR,
-                    MPIO: el.properties.MPIO_CCDGO,
-                    DPTO: el.properties.DPTO_CCDGO,
-                    geojson: el
-                };
-            }));
-
+        var ServiceDaneFind = L.esri.Tasks.find({
+            url: config.dominio + config.urlHostDP + 'MapServer'
+        });
+        ServiceDaneFind.layers('0').returnGeometry(false).text(request.term).fields('MPIO_CNMBRSA,MPIO_CNMBR');
+        
+        ServiceDaneFind.run(function (error, FCMPIO, response2) {
+            ServiceDaneFind.layers('1').returnGeometry(false).text(request.term).fields('DPTO_CNMBR');
+            ServiceDaneFind.run(function (error, FCDPTO, response2) {
+                $("#BtnBusquedaMun").empty().append("<span class='glyphicon glyphicon-search'></span>").removeClass("btn-warning").addClass("btn-default");
+                var result = turf.featurecollection(FCMPIO.features.concat(FCDPTO.features));
+                response($.map(result.features, function (el) {
+                    if (el.properties.MPIO_CNMBR != undefined) {
+                        return {
+                            label: el.properties.MPIO_CNMBR + " - " + el.properties.DPTO_CNMBR,
+                            value: el.properties.MPIO_CNMBR + " - " + el.properties.DPTO_CNMBR,
+                            geojson: el
+                        };
+                    } else {
+                        return {
+                            label:  el.properties.DPTO_CNMBR,
+                            value: el.properties.DPTO_CNMBR,
+                            geojson: el
+                        };
+                    }
+                    
+                }));
+            });
         });
     },
     minLength: 3,
     select: function (event, ui) {
        
-        if (map.hasLayer(LyrMunicipio)) {
-            map.removeLayer(LyrMunicipio);
+        if (map.hasLayer(LyrMunicipioDpto)) {
+            map.removeLayer(LyrMunicipioDpto);
         }
-        selAlfMun(ui.item.geojson, ui.item.MPIO, ui.item.DPTO);
+        BusquedaAdministrativa(ui.item.geojson);
         
     },
     open: function () {
@@ -58,9 +67,18 @@ $("#city").autocomplete({
         .append('<small>' + item.label + '</small>' +
                 '</li>').appendTo(ul);
 };
-var selAlfMun = function (json, Mpio, Dpto) {
-   
-    LyrMunicipio = L.geoJson(json, {
+var BusquedaAdministrativa = function (json) {
+    
+    var lyrZoom;
+    if (json.properties.MPIO_CNMBR != undefined) {
+        lyrZoom = turf.filter(glo.jsonMun, 'MPIO_CNMBR', json.properties.MPIO_CNMBR);
+    } else {
+        lyrZoom = turf.filter(glo.jsonDto, 'CODIGO_DEP', json.properties.DPTO_CCDGO);
+    }
+
+
+
+    LyrMunicipioDpto = L.geoJson(lyrZoom, {
         style: function (feature) {
             return {
                 color: '#00FFFC',
@@ -71,13 +89,13 @@ var selAlfMun = function (json, Mpio, Dpto) {
         }
     }).addTo(map);
     //map.setMaxBounds(LyrMunicipio.getBounds());
-    map.fitBounds(LyrMunicipio.getBounds());
+    map.fitBounds(LyrMunicipioDpto.getBounds());
 }
 
 
 $("#BtnLimpiarMun").click(function () {
-    if (map.hasLayer(LyrMunicipio)) {
-        map.removeLayer(LyrMunicipio);
+    if (map.hasLayer(LyrMunicipioDpto)) {
+        map.removeLayer(LyrMunicipioDpto);
     }
  
     map.setView([4.12521648, -74.5020], 5);

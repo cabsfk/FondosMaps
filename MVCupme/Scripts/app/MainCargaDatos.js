@@ -194,6 +194,17 @@ function getParametros() {
     return where;
 }
 
+function resetMapa() {
+    $("#panel_superDerecho").hide();
+   /* if (glo.layerStyle != "") {
+        glo.lyrMate.resetStyle(glo.layerStyle);
+    }*/
+}
+$("#closePanelDem").click(function () {
+    resetMapa();
+});
+
+
 function getBreaks(Lyr) {
     var breaks;
     
@@ -216,7 +227,7 @@ function getBreaks(Lyr) {
         breaks[0]=1;
         breaks.unshift(0);
     }
-    waitingDialog.hide();
+     waitingDialog.hide();
     return breaks;
 }
 function sumCampo(fc, campo) {
@@ -283,8 +294,6 @@ function getFondosData() {
             if ($("#textlegend").text() == "Mostrar") {
                 $(".legend").hide();
             }
-           
-            
     });
 }
 
@@ -294,16 +303,17 @@ function getDeptoSimp() {
     queryDeptoSimpli
         .fields(['CODIGO_DEP', 'NOMBRE'])
         .orderBy(['CODIGO_DEP']);
-    queryDeptoSimpli.where("1=1").run(function (error, geojson, response) {
-        LyrDeptoSim = geojson;
-        
-        queryMunSimpli
-          .fields(['DPTO_CCDGO', 'MPIO_CCDGO', 'MPIO_CCNCT', 'MPIO_CNMBR'])
-          .orderBy(['MPIO_CCNCT']);
-        queryMunSimpli.where("1=1").run(function (error, geojson, response) {
-            LyrMunicipioSim = geojson;
-            getFondosData();
-        });
+    queryDeptoSimpli.where("1=1").run(function (error, geojsonDpto, response) {
+        LyrDeptoSim = geojsonDpto;
+        glo.jsonDto = JSON.parse(JSON.stringify(geojsonDpto));
+    });
+    queryMunSimpli
+         .fields(['DPTO_CCDGO', 'MPIO_CCDGO', 'MPIO_CCNCT', 'MPIO_CNMBR'])
+         .orderBy(['MPIO_CCNCT']);
+    queryMunSimpli.where("1=1").run(function (error, geojsonMun, response) {
+        LyrMunicipioSim = geojsonMun;
+        glo.jsonMun = JSON.parse(JSON.stringify(geojsonMun));
+        getFondosData();
     });
 }
 

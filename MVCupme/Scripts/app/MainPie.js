@@ -12,11 +12,7 @@
     };
 });
 function pie(arrayJsonFondos, idContainer, nombre) {
-    if (arrayJsonFondos.length > 0) {
-        $("#panel_superDerecho").show();
-    } else {
-        $("#panel_superDerecho").hide();
-    }
+    
     var confPie = {
         chart: {
             plotBackgroundColor: null,
@@ -64,8 +60,13 @@ function pie(arrayJsonFondos, idContainer, nombre) {
         
         console.log(confPie);
     }
-    
+    if (arrayJsonFondos.length > 0) {
+        $("#panel_superDerecho").show();
+    } else {
+        $("#panel_superDerecho").hide();
+    }
     $('#' + idContainer).highcharts(confPie);
+
 }
 
 function getFondos(cod_dept, cod_mpio,nombre) {
