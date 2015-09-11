@@ -265,6 +265,7 @@
     <Content Include="Content\respond.matchmedia.addListener.min.js" />
     <Content Include="Content\respond.min.js" />
     <None Include="Content\_references.js" />
+    <Content Include="Content\StyleCheck.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -343,6 +344,11 @@
     <Content Include="images\slider\bg2.png" />
     <Content Include="images\slider\bg3.jpg" />
     <Content Include="images\slider\bg4.jpg" />
+    <Content Include="Scripts\appProy\Ayuda.js" />
+    <Content Include="Scripts\appProy\BusquedaMun.js" />
+    <Content Include="Scripts\appProy\Globalconfig.js" />
+    <Content Include="Scripts\appProy\MainCargaDatos.js" />
+    <Content Include="Scripts\appProy\MainMap.js" />
     <Content Include="Scripts\app\Ayuda.js" />
     <Content Include="Scripts\app\BusquedaMun.js" />
     <Content Include="Scripts\app\Globalconfig.js" />

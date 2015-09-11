@@ -63,14 +63,22 @@ namespace MVCupme
             
             bundles.Add(new ScriptBundle("~/bundles/appMapGlobal").Include(
                 "~/Scripts/app/Globalconfig.js"));
-
+            
             bundles.Add(new ScriptBundle("~/bundles/appMap").Include(
                 "~/Scripts/app/BusquedaMun.js",
                "~/Scripts/app/MainCargaDatos.js",
-               "~/Scripts/app/MainPie.js", 
+               "~/Scripts/app/MainPie.js",
                 "~/Scripts/app/MainMap.js",
                 "~/Scripts/app/Ayuda.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/appMapGlobalProy").Include(
+                "~/Scripts/appProy/Globalconfig.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/appMapProy").Include(
+                "~/Scripts/appProy/BusquedaMun.js",
+               "~/Scripts/appProy/MainCargaDatos.js",
+                "~/Scripts/appProy/MainMap.js",
+                "~/Scripts/appProy/Ayuda.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Scripts/libs/bootstrap-3.3.1/dist/css/bootstrap.min.css",
@@ -98,6 +106,7 @@ namespace MVCupme
                       "~/Content/css/main.css",
                       "~/Content/css/bootstrap-nav-wizard.css",
                       "~/Scripts/libs/leaflet_markers/leaflet.awesome-markers.css",
+                      "~/Content/StyleCheck.css",
                       "~/Content/site.css"));
         }
     }

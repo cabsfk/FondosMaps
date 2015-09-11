@@ -235,6 +235,6 @@ C:\BACKUPCODIGO\3. FondosMaps\MVCupme\bin\es\Microsoft.Owin.Security.Facebook.re
 C:\BACKUPCODIGO\3. FondosMaps\MVCupme\bin\es\Microsoft.Owin.Security.Google.resources.dll
 C:\BACKUPCODIGO\3. FondosMaps\MVCupme\bin\es\Microsoft.Owin.Security.Twitter.resources.dll
 C:\BACKUPCODIGO\3. FondosMaps\MVCupme\bin\es\Microsoft.Owin.Security.MicrosoftAccount.resources.dll
+C:\BACKUPCODIGO\3. FondosMaps\MVCupme\obj\Debug\FondosMaps.csprojResolveAssemblyReference.cache
 C:\BACKUPCODIGO\3. FondosMaps\MVCupme\obj\Debug\MVCupme.dll
 C:\BACKUPCODIGO\3. FondosMaps\MVCupme\obj\Debug\MVCupme.pdb
-C:\BACKUPCODIGO\3. FondosMaps\MVCupme\obj\Debug\FondosMaps.csprojResolveAssemblyReference.cache
