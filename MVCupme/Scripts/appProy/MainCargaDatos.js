@@ -1,4 +1,4 @@
-﻿function crearSU() {
+﻿ function crearSU() {
     
     for (var i = 0; i < glo.IDSU.length; i++) {
         var temp = turf.filter(glo.jsonSU, 'ID_CENTRO_POBLADO', glo.IDSU[i]);
@@ -8,15 +8,23 @@
     MapearProyectos(fc);
 }
 
+
+$('#BuscarMapa').click(function () {
+    getData();
+});
 function addSitioUpme(fc, origen, isu) {
-    var filtered;
     
     for (var i = 0; i < fc.features.length; i++) {
         glo.IDSU.push(fc.features[i].properties[isu]);
+        fc.features[i].properties.origen = origen;
+        fc.features[i].properties.NomISU = isu;
     }
+    console.log(fc);
     glo.loadProy.push(origen);
 
+
     if (glo.loadProy.length > 2) {
+        waitingDialog.hide();
         glo.IDSU = glo.IDSU.unique();
         crearSU();
     }
@@ -43,35 +51,43 @@ function getData() {
 
         queryDataProyFO.where(where).returnGeometry(false).run(function (error, fcFO, response) {
             glo.fcFO = fcFO;
+            console.log('Ingreso Fondos');
             addSitioUpme(fcFO, 'FO','ISU');
             
         });
     } else {
-        glo.loadProy.push('FO');
+        glo.loadProy.push(' ');
     }
     if ($('#checkPCR').is(':checked')) {
         var queryDataProySuPCR = L.esri.Tasks.query({
             url: config.dominio + config.urlHostDataProy + 'MapServer/' + config.PECOR
         });
-        queryDataProySuPCR.where(where).returnGeometry(false).run(function (error, fcPCR, response) {
+        queryDataProySuPCR.where("1 = '1'").returnGeometry(false).run(function (error, fcPCR, response) {
+
             glo.fcPCR = fcPCR
+            console.log('Ingreso PECORS');
             addSitioUpme(fcPCR, 'PCR','ISU');
         });
     } else {
-        glo.loadProy.push('PCR');
+        glo.loadProy.push(' ');
     }
-    if ($('#checkPCR').is(':checked')) {
+    if ($('#checkPERS').is(':checked')) {
         var queryDataProyPERS = L.esri.Tasks.query({
             url: config.dominio + config.urlHostDataProy + 'MapServer/' + config.PERS
         });
         queryDataProyPERS.where("1 = '1'").returnGeometry(false).run(function (error, fcPERS, response) {
-            glo.fcPERS = fcPERS
+            glo.fcPERS = fcPERS;
+            console.log('Ingreso PERS');
             addSitioUpme(fcPERS, 'PERS', 'ID_SITIO');
         });
     } else {
-        glo.loadProy.push('PERS');
+        glo.loadProy.push(' ');
     }
-    
+    if (glo.loadProy.length > 2) {
+        waitingDialog.hide();
+        glo.IDSU = glo.IDSU.unique();
+        crearSU();
+    }
 }
 
 

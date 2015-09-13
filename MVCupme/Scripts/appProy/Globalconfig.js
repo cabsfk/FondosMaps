@@ -23,7 +23,9 @@ glo = {
     jsonMun: "",
     jsonDto: "",
     jsonSU: "",
-    arrayFondos: "",
+    arrayFondos: [],
+    arrayConcepto: [],
+    arraySectores:[],
     fcFO: "",
     fcPCR: "",
     fcPERS: "",
@@ -44,7 +46,7 @@ glo = {
             });
         }
     }),
-    styleProy: { icon: L.AwesomeMarkers.icon({ icon: 'money', prefix: 'fa', markerColor: 'darkred' }), riseOnHover: true }
+    styleProy: { icon: L.AwesomeMarkers.icon({ icon: 'fa-file-text-o', prefix: 'fa', markerColor: 'darkred' }), riseOnHover: true }
 
 }
 var SumaTotales = { Valor: 0, Beneficiarios: 0 };
@@ -152,7 +154,7 @@ Array.prototype.unique = function (a) {
     return c.indexOf(a, b + 1) < 0
 });
 
-
+jQuery.fn.exists = function () { return this.length > 0; }
 
 /*********************************
 //CAPAS BASE 
@@ -237,27 +239,51 @@ $('#date_fin').datetimepicker({
 
 
 
-var arrayFondos = [];
+
 var query_fondos = L.esri.Tasks.query({
     url: config.dominio + config.urlHostDataFO + 'MapServer/'+config.FO
 });
 
 query_fondos.where("1='1'").returnGeometry(false).run(function (error, featureCollection) {
     var data = [];
-    $.each(featureCollection.features.reverse(), function (index, value) {
+    console.log(featureCollection);
+    $.each(featureCollection.features, function (index, value) {
         glo.arrayFondos[value.properties.ID_FONDO] = value.properties.SIGLA;
         var array = { label: value.properties.SIGLA+" - "+value.properties.NOMBRE, value: value.properties.ID_FONDO};
         data.push(array);
     });
+    console.log(glo.arrayFondos);
   
     $('#SelctFondo').multiselect('disable');
 });
 
 
+var query_Concepto = L.esri.Tasks.query({
+    url: config.dominio + config.urlHostDataFO + 'MapServer/' + config.CON
+});
+
+query_Concepto.where("1='1'").returnGeometry(false).run(function (error, featureCollection) {
+    var data = [];
+    $.each(featureCollection.features.reverse(), function (index, value) {
+        glo.arrayConcepto[value.properties.ID_CONCEPTO] = value.properties.CONCEPTO;
+    });
+    
+});
 
 
 
+var query_sectores = L.esri.Tasks.query({
+    url: config.dominio + config.urlHostDataFO + 'MapServer/' + config.SEC
+});
 
+query_sectores.where("1='1'").returnGeometry(false).run(function (error, featureCollection) {
+    var data = [];
+    $.each(featureCollection.features.reverse(), function (index, value) {
+        glo.arraySectores[value.properties.ID_SECTOR] = value.properties.SIGLA;
+
+    });
+    // $("#SelctSectores").multiselect('dataprovider', data);
+});
 
 
 
