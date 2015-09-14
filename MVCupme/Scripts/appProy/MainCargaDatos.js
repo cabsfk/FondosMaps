@@ -49,8 +49,13 @@ function getData() {
         });
 
         queryDataProyFO.where(where).returnGeometry(false).run(function (error, fcFO, response) {
-            glo.fcFO = fcFO;
-            addSitioUpme(fcFO, 'FO','ISU');
+            if (fcFO.features.length > 0) {
+                glo.fcFO = fcFO;
+                addSitioUpme(fcFO, 'FO', 'ISU');
+            } else {
+                glo.loadProy.push(' ');
+            }
+            
         });
     } else {
         glo.loadProy.push(' ');
@@ -59,11 +64,13 @@ function getData() {
         var queryDataProySuPCR = L.esri.Tasks.query({
             url: config.dominio + config.urlHostDataProy + 'MapServer/' + config.PECOR
         });
-        queryDataProySuPCR.where("1 = '1'").returnGeometry(false).run(function (error, fcPCR, response) {
-
-            glo.fcPCR = fcPCR
-            console.log('Ingreso PECORS');
-            addSitioUpme(fcPCR, 'PCR','ISU');
+        queryDataProySuPCR.where(where).returnGeometry(false).run(function (error, fcPCR, response) {
+            if (fcPCR.features.length > 0) {
+                glo.fcPCR = fcPCR;
+                addSitioUpme(fcPCR, 'PCR', 'ISU');
+            } else {
+                glo.loadProy.push(' ');
+            }
         });
     } else {
         glo.loadProy.push(' ');
@@ -72,10 +79,13 @@ function getData() {
         var queryDataProyPERS = L.esri.Tasks.query({
             url: config.dominio + config.urlHostDataProy + 'MapServer/' + config.PERS
         });
-        queryDataProyPERS.where("1 = '1'").returnGeometry(false).run(function (error, fcPERS, response) {
-            glo.fcPERS = fcPERS;
-            console.log('Ingreso PERS');
-            addSitioUpme(fcPERS, 'PERS', 'ID_SITIO');
+        queryDataProyPERS.where(where).returnGeometry(false).run(function (error, fcPERS, response) {
+            if (fcPERS.features.length > 0) {
+                glo.fcPERS = fcPERS;
+                addSitioUpme(fcPERS, 'PERS', 'ID_SITIO');
+            } else {
+                glo.loadProy.push(' ');
+            }
         });
     } else {
         glo.loadProy.push(' ');
