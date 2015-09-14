@@ -362,6 +362,7 @@
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />
+    <Content Include="Scripts\libs\bootpag\jquery.bootpag.min.js" />
     <Content Include="Scripts\libs\BootstrapDialog\css\bootstrap-dialog.css" />
     <Content Include="Scripts\libs\BootstrapDialog\css\bootstrap-dialog.min.css" />
     <Content Include="Scripts\libs\BootstrapDialog\js\bootstrap-dialog.js" />

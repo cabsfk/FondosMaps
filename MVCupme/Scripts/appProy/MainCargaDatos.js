@@ -19,9 +19,8 @@ function addSitioUpme(fc, origen, isu) {
         fc.features[i].properties.origen = origen;
         fc.features[i].properties.NomISU = isu;
     }
-    console.log(fc);
+    
     glo.loadProy.push(origen);
-
 
     if (glo.loadProy.length > 2) {
         waitingDialog.hide();
@@ -35,7 +34,7 @@ function getParametros() {
     
     $("#TextFechaIni").empty().append(datemin);
     $("#TextFechaFin").empty().append(datemax);
-    var where = "FE >= date '" + datemin + "' and FE<= date '" + datemax + "'";
+    var where = "FE >= date '" + datemin + "' and FE<= date '" + datemax + "'" + glo.FilBusqueda;
     return where;
 }
 function getData() {
@@ -51,9 +50,7 @@ function getData() {
 
         queryDataProyFO.where(where).returnGeometry(false).run(function (error, fcFO, response) {
             glo.fcFO = fcFO;
-            console.log('Ingreso Fondos');
             addSitioUpme(fcFO, 'FO','ISU');
-            
         });
     } else {
         glo.loadProy.push(' ');
@@ -94,7 +91,7 @@ function getData() {
 function getGeoAdmin() {
     waitingDialog.show();
     var queryDeptoSimpli = L.esri.Tasks.query({
-        url: config.dominio + config.urlHostDataFO + 'MapServer/' + config.FO
+        url: config.dominio + config.urlHostDataFO + 'MapServer/' + config.DEPTO_GEN
     });
     queryDeptoSimpli
         .fields(['CODIGO_DEP', 'NOMBRE'])
@@ -102,20 +99,9 @@ function getGeoAdmin() {
     queryDeptoSimpli.where("1=1").run(function (error, geojsonDpto, response) {
         LyrDeptoSim = geojsonDpto;
         glo.jsonDto = JSON.parse(JSON.stringify(geojsonDpto));
+        
     });
 
-    /*var queryMunSimpli = L.esri.Tasks.query({
-        url: config.dominio + config.urlHostDataFO + 'MapServer/' + config.MPIO_GEN
-    });
-    queryMunSimpli
-         .fields(['DPTO_CCDGO', 'MPIO_CCDGO', 'MPIO_CCNCT', 'MPIO_CNMBR'])
-         .orderBy(['MPIO_CCNCT']);
-    queryMunSimpli.where("1=1").run(function (error, geojsonMun, response) {
-        LyrMunicipioSim = geojsonMun;
-        glo.jsonMun = JSON.parse(JSON.stringify(geojsonMun));
-        
-        waitingDialog.hide();
-    });*/
     var querySU = L.esri.Tasks.query({
         url: config.dominio + config.urlHostDataProy + 'MapServer/' + config.SITIOS_UPME
     });

@@ -38,7 +38,8 @@ namespace MVCupme
                       "~/Scripts/libs/highcharts/modules/exporting.js",
                       "~/Scripts/libs/highcharts/modules/data.js",
                       "~/Scripts/libs/highcharts/modules/drilldown.js",
-                      "~/Scripts/libs/waitingDialog/waitingDialog.js"
+                      "~/Scripts/libs/waitingDialog/waitingDialog.js",
+                      "~/Scripts/libs/bootpag/jquery.bootpag.min.js"
                       ));
 
             bundles.Add(new ScriptBundle("~/bundles/leaflet").Include(

@@ -1089,9 +1089,7 @@ ul.social > li > a:hover {
 .blog .blog-item .entry-meta > span a {
   color: #999;
 }
-ul.pagination > li > a {
-  border: 0;
-}
+
 ul.pagination > li.active > a,
 ul.pagination > li:hover > a {
   background-color: #34495e;
