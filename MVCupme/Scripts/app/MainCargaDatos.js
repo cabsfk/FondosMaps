@@ -168,7 +168,7 @@ function getParametros() {
     var SelctSectores = getMultiSelect('SelctSectores');
     var SelctEstado = getMultiSelect('SelctEstado');
     var SelctConcepto = getMultiSelect('SelctConcepto');
-    console.log(SelctEstado[0]);
+   // console.log(SelctEstado[0]);
     if (SelctConcepto[0] == "'Favorable'") {
         if (SelctEstado[0] == "'Con asignación de recursos'") {
             glo.tituloLeyenda = 'Asignado';
@@ -212,9 +212,9 @@ function getBreaks(Lyr) {
     var cuentaValores = lyrTemp.features.length;
     
     if (cuentaValores > 8) {
-        console.log(cuentaValores);
+       
         breaks = turf.jenks(Lyr, 'VT', 4);
-        console.log(breaks);
+       
     } else {
         breaks = turf.jenks(Lyr, 'VT', cuentaValores);
     }
@@ -264,6 +264,8 @@ function CuentaTbs(featureCollection) {
     $('#lbBeneficiarioAsig').empty().append(numeral(BeneAsig).format('0,0'));
     $('#lbCantProyoAsig').empty().append(numeral(fcAsig.features.length).format('0,0'));
 }
+
+
 function getFondosData() {
     waitingDialog.show();
     if ($("#EscalaMap").val() == "Municipio") {
@@ -327,7 +329,7 @@ function getDeptoSimp() {
 getDeptoSimp();
 
 $("#BuscarMapa").click(function () {
-    console.log("Busco");
+   
     legend.removeFrom(map);
     getFondosData();
 })

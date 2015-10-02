@@ -112,6 +112,13 @@ legend.onAdd = function (map) {
     return div;
 };
 
+var mousemove = document.getElementById('mousemove');
+
+map.on('mousemove', function (e) {
+    window[e.type].innerHTML = 'Long:' + e.latlng.lng.toFixed(6) + '   Lat:' + e.latlng.lat.toFixed(6);
+});
+
+
 $("#BtnMonstrarConven").click(function () {
     if ($(".legend").is(":visible")) {
         $(".legend").hide("slow", function () {
@@ -143,14 +150,15 @@ $('.carousel').carousel({
     interval: 7000
 });
 
-var OpenMapSurfer_Roads = L.tileLayer('http://openmapsurfer.uni-hd.de/tiles/roads/x={x}&y={y}&z={z}', {
-    minZoom: 0,
-    maxZoom: 20,
-    attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+var OpenMapSurfer_Roads = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/{type}/{z}/{x}/{y}.{ext}', {
+    type: 'map',
+    ext: 'jpg',
+    attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    subdomains: '1234'
 });
 
-var LyrBase = L.esri.basemapLayer('Topographic').addTo(map);
-var LyrLabels;
+var LyrBase = L.esri.basemapLayer('Imagery').addTo(map);
+var LyrLabels = L.esri.basemapLayer('ImageryLabels').addTo(map);
 
 function setBasemap(basemap) {
     if (map.hasLayer(LyrBase)) {
@@ -162,6 +170,14 @@ function setBasemap(basemap) {
         LyrBase = OpenMapSurfer_Roads;
     }
     map.addLayer(LyrBase);
+    if (map.hasLayer(LyrLabels)) {
+        map.removeLayer(LyrLabels);
+    }
+
+    if (basemap === 'ShadedRelief' || basemap === 'Oceans' || basemap === 'Gray' || basemap === 'DarkGray' || basemap === 'Imagery' || basemap === 'Terrain') {
+        LyrLabels = L.esri.basemapLayer(basemap + 'Labels');
+        map.addLayer(LyrLabels);
+    }
     $(".esri-leaflet-logo").hide();
     $(".leaflet-control-attribution").hide();
 }
@@ -414,5 +430,4 @@ $(function () {
     });
     
 });
-
 

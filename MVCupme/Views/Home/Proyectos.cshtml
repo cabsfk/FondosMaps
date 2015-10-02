@@ -9,7 +9,16 @@
 <div class="col-sm-2 col-md-2" id="panel_formulario" style="max-width: 370px; min-width: 320px; ">
     <div class="panel panel-primary">
         <div class="panel-heading">
-            <h3 class="panel-title"> Gestion De Proyectos.</h3>
+            <center>
+                <button type="button" class="btn btn-default ">
+                    <span class="glyphicon glyphicon-signal"></span> @Html.ActionLink("Indicadores", "", "")
+
+                </button>
+                <button type="button" class="btn btn-default active">
+                    <span class="glyphicon glyphicon-edit"></span>@Html.ActionLink("Proyectos", "Proyectos", "Home")
+
+                </button>
+            </center>
         </div>
 
         <div class="panel-body">
@@ -43,7 +52,12 @@
                                             PERS
                                         </label>
                                     </div>
+                                    <div>
+                                        <label>Fondo: </label><br>
+                                        <select class="form-control" id="SelctFondo" multiple="multiple"></select>
+                                    </div>
                                 </div>
+                                <br>
                             </div>
                             <div class="tab-pane " id="espacios">
                                 <br>
@@ -64,7 +78,7 @@
                                         </span>
                                     </div><!-- /input-group -->
                                 </form>
-
+                                <br>
                             </div>
                             
                             <div class="tab-pane" id="tiempo">
@@ -117,11 +131,7 @@
                     </div>
                     <br>
                     <hr>
-                    <div>
-                        <button type="button" id="BuscarMapa" class="btn btn-success btn-block">
-                            <span class="glyphicon glyphicon-search"></span> Buscar
-                        </button>
-                    </div>
+                    
                 </div>
 
             </div>
@@ -132,7 +142,11 @@
 
     </div>
     <div class="panel-footer">
-
+        <div>
+            <button type="button" id="BuscarMapa" class="btn btn-success btn-block">
+                <span class="glyphicon glyphicon-search"></span> Buscar
+            </button>
+        </div>
     </div>
 </div>
 </div>

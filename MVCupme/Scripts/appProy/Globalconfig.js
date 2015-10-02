@@ -117,7 +117,7 @@ legend.onAdd = function (map) {
     labels = [];
 
     div.innerHTML += '<b>Convenciones </b><br>';
-    div.innerHTML += '<i ><img src="' + prefijo + 'images/leyend/Proyecto.png"  height="17px"></i>Proyecto<br>';
+    div.innerHTML += '<i ><img src="' + prefijo + 'images/leyend/Proyecto.png"  height="17px"></i>Sitio UPME<br>';
     div.innerHTML += '<i ><img src="' + prefijo + 'images/leyend/Cluster.png"  height="17px"></i>Cluster<br>';
     div.innerHTML += '<i ><img src="' + prefijo + 'images/leyend/municipioSelecionado.png"  height="17px"></i>Municipio Seleccionado<br>';
 
@@ -157,14 +157,15 @@ $('.carousel').carousel({
     interval: 7000
 });
 
-var OpenMapSurfer_Roads = L.tileLayer('http://openmapsurfer.uni-hd.de/tiles/roads/x={x}&y={y}&z={z}', {
-    minZoom: 0,
-    maxZoom: 20,
-    attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+var OpenMapSurfer_Roads = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/{type}/{z}/{x}/{y}.{ext}', {
+    type: 'map',
+    ext: 'jpg',
+    attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    subdomains: '1234'
 });
 
 var LyrBase = L.esri.basemapLayer('Topographic').addTo(map);
-var LyrLabels;
+var LyrLabels = L.esri.basemapLayer('ImageryLabels');
 
 function setBasemap(basemap) {
     if (map.hasLayer(LyrBase)) {
@@ -176,6 +177,14 @@ function setBasemap(basemap) {
         LyrBase = OpenMapSurfer_Roads;
     }
     map.addLayer(LyrBase);
+    if (map.hasLayer(LyrLabels)) {
+        map.removeLayer(LyrLabels);
+    }
+
+    if (basemap === 'ShadedRelief' || basemap === 'Oceans' || basemap === 'Gray' || basemap === 'DarkGray' || basemap === 'Imagery' || basemap === 'Terrain') {
+        LyrLabels = L.esri.basemapLayer(basemap + 'Labels');
+        map.addLayer(LyrLabels);
+    }
     $(".esri-leaflet-logo").hide();
     $(".leaflet-control-attribution").hide();
 }
@@ -244,9 +253,8 @@ query_fondos.where("1='1'").returnGeometry(false).run(function (error, featureCo
         var array = { label: value.properties.SIGLA+" - "+value.properties.NOMBRE, value: value.properties.ID_FONDO};
         data.push(array);
     });
-    console.log(glo.arrayFondos);
-  
-    $('#SelctFondo').multiselect('disable');
+    $("#SelctFondo").multiselect('dataprovider', data);
+    //$('#SelctFondo').multiselect('disable');
 });
 
 
@@ -295,9 +303,41 @@ $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 
 $(function () {
     $('[data-toggle="tooltip"]').tooltip();
-    
-  
-    
+
+    $("#SelctFondo").multiselect({
+        includeSelectAllOption: true,
+        enableFiltering: true,
+        selectAllText: 'Todos',
+        enableCaseInsensitiveFiltering: true,
+        buttonWidth: '150px',
+        dropRight: false,
+        maxHeight: 250,
+        filterPlaceholder: 'Buscar...',
+        buttonText: function (options, select) {
+
+            var labels = [], values = [];
+
+            if (options.length === 0) {
+                
+                return 'No hay Seleccionados';
+            }
+            else {
+
+                options.each(function () {
+                    if ($(this).attr('label') !== undefined) {
+                        labels.push($(this).attr('label'));
+                        values.push($(this).attr('value'));
+                    }
+                    else {
+                        labels.push($(this).html());
+                    }
+                });
+
+                return labels.join(', ') + '';
+            }
+        }
+    });
+
 });
 
 

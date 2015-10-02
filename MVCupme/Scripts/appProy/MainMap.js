@@ -91,7 +91,7 @@
                 for (i = 0; i < ProPERS.features.length; i++) {
                     var feature = ProPERS.features[i];
                     feature.properties.FE = moment(feature.properties.FE).tz("America/Bogota").add(5, 'hours').format('DD/MM/YYYY');
-                    console.log(feature.properties);
+                    //console.log(feature.properties);
                     htmlpopup =
                         '<div class="panel panel-default">' +
                               '<div class="panel-body">' +
@@ -151,6 +151,8 @@
 }
 
 function MapearProyectos(fc) {
+
+    
     glo.lyrProyCluster = L.geoJson(fc, {
         pointToLayer: function (feature, latlng) {
             var featureMarket;
@@ -161,9 +163,10 @@ function MapearProyectos(fc) {
                 closeButton: true,
                 minWidth: 250
             });
+            
             featureMarket.on('popupopen', function (e) {
                 crearhtml(feature.properties)
-                
+                map.panTo(latlng);
             });
             return featureMarket;
         }

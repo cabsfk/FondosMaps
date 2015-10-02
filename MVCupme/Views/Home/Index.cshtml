@@ -9,7 +9,18 @@
 <div class="col-sm-2 col-md-2" id="panel_formulario" style="max-width:350px;min-width:300px;">
     <div class="panel panel-primary">
         <div class="panel-heading">
-            <h3 class="panel-title"> Gestion De Fondos De Proyectos.</h3>
+            <h3 class="panel-title">
+                <center>
+                    <button type="button" class="btn btn-default active">
+                        <span class="glyphicon glyphicon-signal"></span> @Html.ActionLink("Indicadores", "", "")
+
+                    </button>
+                <button type="button" class="btn btn-default">
+                    <span class="glyphicon glyphicon-edit"></span>@Html.ActionLink("Proyectos", "Proyectos", "Home")
+
+                </button>
+                    </center>
+            </h3>
         </div>
         <div class="panel-body">
             <div>
@@ -78,7 +89,7 @@
                                     <div class="form-group">
                                         <label>Escala:</label>
                                         <select class="form-control" id="EscalaMap">
-                                            <option value="Departamento">Deparamento</option>
+                                            <option value="Departamento">Departamento</option>
                                             <option value="Municipio">Municipio</option>
                                         </select>
                                     </div>
@@ -111,6 +122,8 @@
                         <br>
 
                         <div >
+                            <hr>
+                            <br>
                             <button type="button" id="BuscarMapa" class="btn btn-success btn-block">
                                 <span class="glyphicon glyphicon-search"></span> Buscar</button>
                         </div>
@@ -146,7 +159,7 @@
         </div>
         <div class="panel-footer">
             <form>
-                <h4><p class="text-center">Consolidado Nacional <br>Según la Búsqueda</p></h4>
+                <h5><b><p class="text-center">Consolidado Nacional <br>Según la Búsqueda</p></b></h5>
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active"><a href="#tabValorFavorable" role="tab" data-toggle="tab">Favorable</a></li>
                     <li role="presentation"><a href="#tabValorAsig" role="tab" data-toggle="tab">Asignacion</a></li>
@@ -158,11 +171,11 @@
                     <div role="tabpanel" class="tab-pane active" id="tabValorFavorable">
                         <hr>
                         <div class="row">
-                            <div class="col-md-5"><small>Valor (Corriente):</small></div>
+                            <div class="col-md-5"><small>Valor (Corriente):</small> <i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Valor corriente por año"></i></div>
                             <div class="col-md-7"><b id="lbValorFav"></b></div>
                         </div>
                         <div class="row">
-                            <div class="col-md-5"><small>Valor (Constante):</small></div>
+                            <div class="col-md-5"><small>Valor (Constante):</small><i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Valor indexado con el IPC a 31 de diciembre de cada año"></i></div>
                             <div class="col-md-7"><b id="lbValorFavCons"></b></div>
                         </div>
                         <div class="row">
@@ -177,11 +190,11 @@
                     <div role="tabpanel" class="tab-pane" id="tabValorAsig">
                         <hr>
                         <div class="row">
-                            <div class="col-md-5"><small>Valor (Corriente):</small></div>
+                            <div class="col-md-5"><small>Valor (Corriente):</small><i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Valor corriente por año"></i></div>
                             <div class="col-md-7"><b id="lbValorAsig"></b></div>
                         </div>
                         <div class="row">
-                            <div class="col-md-5"><small>Valor (Constante):</small></div>
+                            <div class="col-md-5"><small>Valor (Constante):</small><i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Valor indexado con el IPC a 31 de diciembre de cada año"></i></div>
                             <div class="col-md-7"><b id="lbValorAsigCons"></b></div>
                         </div>
                         <div class="row">
@@ -196,11 +209,11 @@
                     <div role="tabpanel" class="tab-pane " id="tabValorTotal">
                         <hr>
                         <div class="row">
-                            <div class="col-md-5"><small>Valor (Corriente):</small></div>
+                            <div class="col-md-5"><small>Valor (Corriente):</small><i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Valor corriente por año"></i></div>
                             <div class="col-md-7"><b id="ValorConTotal"></b></div>
                         </div>
                         <div class="row">
-                            <div class="col-md-5"><small>Valor (Constante):</small></div>
+                            <div class="col-md-5"><small>Valor (Constante):</small><i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Valor indexado con el IPC a 31 de diciembre de cada año"></i></div>
                             <div class="col-md-7"><b id="ValorConTotalCons"></b></div>
                         </div>
                         <div class="row">
@@ -307,8 +320,10 @@
                 </a>
             </div><!--/myCarousel-->
         </div>
-<div class='mouse-position'>
-    <b id='mousemove'><b />
+<div class='mouse-position panel hide'>
+    <div class="panel-body">
+        <h6> <b id='mousemove'><b /></h6>
+    </div>
 </div>
 @Scripts.Render("~/bundles/appMapGlobal")
 @Scripts.Render("~/bundles/appMap")
