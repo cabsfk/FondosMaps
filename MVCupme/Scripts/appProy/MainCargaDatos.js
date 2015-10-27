@@ -2,6 +2,7 @@
     
     for (var i = 0; i < glo.IDSU.length; i++) {
         var temp = turf.filter(glo.jsonSU, 'ID_CENTRO_POBLADO', glo.IDSU[i]);
+        
         for (var j = 0; j < temp.features.length; j++) {
             glo.SUProyectos.push(JSON.parse(JSON.stringify(temp.features[j])));
         }
@@ -141,7 +142,16 @@ function getGeoAdmin() {
       .orderBy(['ID_CENTRO_POBLADO']);
     querySU.where("1=1").run(function (error, geojson, response) {
         glo.jsonSU = geojson;
-        getData();
+        var getqueryDatavss = L.esri.Tasks.query({
+            url: config.dominio + config.urlHostPIEC + 'MapServer/' + config.VSS_SITIOS
+        });
+
+        getqueryDatavss.where("PLA_ANO_BASE ='" + (parseInt(moment().format('YYYY')) - 1) + "'").run(function (error, fc) {
+            glo.VSS_SITIOS = fc;
+            console.log(glo.VSS_SITIOS);
+            getData();
+        });
+        
         waitingDialog.hide();
     });
 }

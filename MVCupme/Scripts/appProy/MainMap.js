@@ -116,6 +116,38 @@
             }
         }
     }
+    
+    if (glo.VSS_SITIOS.features.length > 0) {
+      
+        /*
+        Descomentariar la siguiente linea cuanod este en producion y comentariar la de 14993
+        */
+        //var ProSITIOS = turf.filter(glo.VSS_SITIOS, 'COD_SITIO', properties.ID_CENTRO_POBLADO);
+        var ProSITIOS = turf.filter(glo.VSS_SITIOS, 'COD_SITIO', 14993);
+
+
+        console.log(ProSITIOS.features);
+        
+            tabTitle = tabTitle + '<li role="presentation" class="' + activacion + '"><a href="#TabINFO" aria-controls="messages" role="tab" data-toggle="tab">PIEC</a></li>';
+            tabContent = tabContent + '<div role="tabpanel" class="tab-pane ' + activacion + '" id="TabINFO">';
+            activacion = '';
+            var feature = ProSITIOS.features[0];
+            htmlpopup =
+                    '<div class="panel panel-default">' +
+                          '<div class="panel-body">' +
+                            '<small>Nombre del sitio:</small> ' + properties.NOMBRE_SITIO + '<br>' +
+                            '<small>Anio Base:</small> ' + numeral(feature.properties.PLA_ANO_BASE).format('0,0') + ' <br>' +
+                            '<small>Costo de inversion:</small> ' + numeral(feature.properties.COS_INV_TOTAL).format('$0,0') + ' <br>' +
+                            '<small>Viviendas Sin Servicio:</small> ' + numeral(feature.properties.COS_VSS).format('0,0') + '<br>' +
+                          '</div>' +
+                        '</div>';
+            glo.html.INFO = [];
+            glo.html.INFO.push(htmlpopup);
+            htmlpopup = '<div id="contentPgINFO">' + glo.html.INFO[0] + '</div>' +
+             '<div id="pageSelINFO"></div>';
+            tabContent = tabContent + htmlpopup + '</div>';
+        
+    }
     var popupContent = tabTitle + tabContent + '</div>' + '</div>';
     
     $('#TabPopup').empty().append(popupContent);
@@ -146,6 +178,15 @@
             $("#contentPgPERS").html(glo.html.PERS[num - 1]); // or some ajax content loading...
         });
     }
+
+    $('#pageSelINFO').bootpag({
+        total: 1,
+        page: 1,
+        maxVisible: 5
+    }).on('page', function (event, num) {
+        $("#contentPgINFO").html(glo.html.INFO[num - 1]); // or some ajax content loading...
+    });
+    
     
 
 }

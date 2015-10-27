@@ -5,13 +5,15 @@ config = {
     dominio2: "http://localhost:6080",
     urlHostDataFO: "/arcgis/rest/services/UPME_FO/UPME_FO_Indicadores_Proyecto/",
     urlHostDP: "/arcgis/rest/services/UPME_BC/UPME_BC_Sitios_UPME_Division_Politica/",
+    urlHostPIEC: "/arcgis/rest/services/UPME_EN/UPME_EN_PIEC_ICEE/",
     MPIO_GEN: '0',
     DEPTO_GEN: '1',
     INDI: '2',
     FO: '3',
     SEC: '4',
     CON: '5',
-    EST: '6'
+    EST: '6',
+    ICCE: '2'
 }
 
 glo = {
@@ -24,7 +26,18 @@ glo = {
     pieConcepto: '',
     pieEstado: '',
     jsonMun: "",
-    jsonDto: ""
+    jsonDto: "",
+    parameMUN: {
+        filEsc: 'MPIO_CCNCT',
+        filEsc2: 'MPIO_CCNCT',
+        filEsc3: 'MPIO_CCNCT'
+    },
+    parameDpto: {
+        filEsc: 'DPTO_CCDGO',
+        filEsc2: 'CODIGO_DEP',
+        filEsc3: 'COD_DPTO'
+    },
+    fCICEE:''
 
 }
 var SumaTotales = { Valor: 0, Beneficiarios: 0 };

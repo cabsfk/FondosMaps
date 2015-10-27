@@ -15,7 +15,9 @@ config = {
     FONDOS: '1',
     PECOR: '2',
     PERS: '3',
-    urlHostDP: "/arcgis/rest/services/UPME_BC/UPME_BC_Sitios_UPME_Division_Politica/"
+    urlHostDP: "/arcgis/rest/services/UPME_BC/UPME_BC_Sitios_UPME_Division_Politica/",
+    urlHostPIEC: "/arcgis/rest/services/UPME_EN/UPME_EN_PIEC_ICEE/",
+    VSS_SITIOS:'5'
     
 }
 
@@ -36,7 +38,8 @@ glo = {
     html:{
         FO:[],
         PERS:[],
-        PERCOR:[]
+        PERCOR: [],
+        INFO: []
     },
     lyrProyCluster: '',
     SuCluster : L.markerClusterGroup({
@@ -52,6 +55,7 @@ glo = {
             });
         }
     }),
+    VSS_SITIOS:'',
     styleProy: { icon: L.AwesomeMarkers.icon({ icon: 'fa-file-text-o', prefix: 'fa', markerColor: 'darkred' }), riseOnHover: true }
 
 }

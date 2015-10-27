@@ -85,6 +85,7 @@ function calculoDepto(fc, LyrDeptoSim) {
             }
             Limitesleyenda = getBreaks(LyrDeptoSim);
             legend.addTo(map);
+            LyrDeptoSim = AsigData(LyrDeptoSim, glo.fCICEE, glo.parameDpto);
             MapearProyectosTotal(LyrDeptoSim);
         }
     });
@@ -144,6 +145,7 @@ function calculoMpio(fc, LyrMunicipioSim) {
             
             }
             Limitesleyenda = getBreaks(LyrMunicipioSim);
+            LyrMunicipioSim=AsigData(LyrMunicipioSim, glo.fCICEE, glo.parameMUN);
             legend.addTo(map);
             MapearProyectosTotal(LyrMunicipioSim);
         }
@@ -212,9 +214,7 @@ function getBreaks(Lyr) {
     var cuentaValores = lyrTemp.features.length;
     
     if (cuentaValores > 8) {
-       
-        breaks = turf.jenks(Lyr, 'VT', 4);
-       
+        breaks = turf.jenks(Lyr, 'VT', 7);
     } else {
         breaks = turf.jenks(Lyr, 'VT', cuentaValores);
     }
@@ -264,7 +264,40 @@ function CuentaTbs(featureCollection) {
     $('#lbBeneficiarioAsig').empty().append(numeral(BeneAsig).format('0,0'));
     $('#lbCantProyoAsig').empty().append(numeral(fcAsig.features.length).format('0,0'));
 }
-
+function AsigData(Gjson, fCICEE, parame) {
+    //console.log(Gjson);
+    var tmpICEE;
+    for (i = 0; i < Gjson.features.length; i++) {
+        tmpICEE = turf.filter(fCICEE, parame.filEsc, Gjson.features[i].properties[parame.filEsc2]);
+        if (tmpICEE.features.length > 0) {
+            Gjson.features[i].properties.ICEE_USCAB_TOT = sumCampo(tmpICEE, 'ICEE_USCAB_TOT');
+            Gjson.features[i].properties.ICEE_USRES_TOT = sumCampo(tmpICEE, 'ICEE_USRES_TOT');
+            Gjson.features[i].properties.ICEE_US_TOT = sumCampo(tmpICEE, 'ICEE_US_TOT');
+            Gjson.features[i].properties.ICEE_VIVCAB = sumCampo(tmpICEE, 'ICEE_VIVCAB');
+            Gjson.features[i].properties.ICEE_VIVRES = sumCampo(tmpICEE, 'ICEE_VIVRES');
+            Gjson.features[i].properties.ICEE_VIVTOT = sumCampo(tmpICEE, 'ICEE_VIVTOT');
+            Gjson.features[i].properties.ICEE_VSS_CAB = sumCampo(tmpICEE, 'ICEE_VSS_CAB');
+            Gjson.features[i].properties.ICEE_VSS_RES = sumCampo(tmpICEE, 'ICEE_VSS_RES');
+            Gjson.features[i].properties.ICEE_VSS_TOT = sumCampo(tmpICEE, 'ICEE_VSS_TOT');
+            Gjson.features[i].properties.ICEE_ICEE_TOT = Gjson.features[i].properties.ICEE_US_TOT / Gjson.features[i].properties.ICEE_VIVTOT;
+            Gjson.features[i].properties.ICEE_ICEE_TOT_DEF = 1 - Gjson.features[i].properties.ICEE_ICEE_TOT;
+        } else {
+            Gjson.features[i].properties.ICEE_USCAB_TOT = 0;
+            Gjson.features[i].properties.ICEE_USRES_TOT = 0;
+            Gjson.features[i].properties.ICEE_US_TOT = 0;
+            Gjson.features[i].properties.ICEE_VIVCAB = 0;
+            Gjson.features[i].properties.ICEE_VIVRES = 0;
+            Gjson.features[i].properties.ICEE_VIVTOT = 0;
+            Gjson.features[i].properties.ICEE_VSS_CAB = 0;
+            Gjson.features[i].properties.ICEE_VSS_RES = 0;
+            Gjson.features[i].properties.ICEE_VSS_TOT = 0;
+            Gjson.features[i].properties.ICEE_ICEE_TOT = 0;
+            Gjson.features[i].properties.ICEE_ICEE_TOT_DEF = 0;      
+        }
+    }
+    console.log(Gjson);
+    return Gjson;
+}
 
 function getFondosData() {
     waitingDialog.show();
@@ -275,17 +308,24 @@ function getFondosData() {
     }
     $("#panel_superDerecho").hide();
 
-    var getqueryDataFondos = L.esri.Tasks.query({
-        url: config.dominio + config.urlHostDataFO + 'MapServer/' + config.INDI
-    });
-    getqueryDataFondos
-        .fields(['D', 'M', 'U', 'VPU', 'VPUA', 'VSU', 'VSUA', 'VASU', 'VASUA', 'CON', 'ES', 'FEA', 'FE', 'VT', 'FECHA'])
-        .orderBy(['D', 'M'])
-        .returnGeometry(false);
+   
     whereParametros = getParametros();
     
-    getqueryDataFondos.where(whereParametros).run(function (error, fc, response) {
-          if (error == undefined) {
+    var getqueryDataICEE = L.esri.Tasks.query({
+        url: config.dominio + config.urlHostPIEC + 'MapServer/' + config.ICCE
+    });
+
+    getqueryDataICEE.where("ICEE_AGNO='" + (parseInt(moment().format('YYYY')) - 1) + "'").run(function (error, fc) {
+        glo.fCICEE=fc;
+        var getqueryDataFondos = L.esri.Tasks.query({
+            url: config.dominio + config.urlHostDataFO + 'MapServer/' + config.INDI
+        });
+        getqueryDataFondos
+            .fields(['D', 'M', 'U', 'VPU', 'VPUA', 'VSU', 'VSUA', 'VASU', 'VASUA', 'CON', 'ES', 'FEA', 'FE', 'VT', 'FECHA'])
+            .orderBy(['D', 'M'])
+            .returnGeometry(false);
+        getqueryDataFondos.where(whereParametros).run(function (error, fc, response) {
+            if (error == undefined) {
                 CuentaTbs(fc);
                 if ($("#EscalaMap").val() == "Municipio") {
                     var cuentaValores = calculoMpio(fc, LyrMunicipioSim);
@@ -302,7 +342,9 @@ function getFondosData() {
             if ($("#textlegend").text() == "Mostrar") {
                 $(".legend").hide();
             }
+        });
     });
+  
 }
 
 
@@ -329,7 +371,6 @@ function getDeptoSimp() {
 getDeptoSimp();
 
 $("#BuscarMapa").click(function () {
-   
     legend.removeFrom(map);
     getFondosData();
 })
