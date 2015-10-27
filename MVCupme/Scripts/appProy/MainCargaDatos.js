@@ -54,7 +54,8 @@ function getData() {
     glo.IDSU = [];
     glo.loadProy = [];
     glo.SUProyectos = [];
-    var where = getParametros();
+    //var where = getParametros();
+    var where = '1=1';
     if ($('#checkFondos').is(':checked')) {
         var queryDataProyFO = L.esri.Tasks.query({
             url: config.dominio + config.urlHostDataProy + 'MapServer/' + config.FONDOS

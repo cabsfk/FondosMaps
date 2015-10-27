@@ -29,7 +29,7 @@ var lyrTotalProyectos;
                             '<span class="text-muted">Beneficiados: </span>' + numeral(feature.properties.U).format('0,0') + '<br>' +
                             '<span class="text-muted">Cantidad proyectos: </span>' + numeral(feature.properties.CANT).format('0,0') + '<br>' +
                             '<span class="text-muted">Viviendas Totales<i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Cantidad total de viviendas segun ultima vigencia"></i>: </span>' + numeral(feature.properties.ICEE_VIVTOT).format('0,0') + '<br>' +
-                            '<span class="text-muted">ICEE<i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Indice de. Cobertura del Servicio de Energía Eléctrica"></i>: </span>' + numeral(feature.properties.ICEE_ICEE_TOT).format('0,0.00') + '%<br>' +
+                            '<span class="text-muted">ICEE<i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Indice de. Cobertura del Servicio de Energía Eléctrica"></i>: </span>' + numeral(feature.properties.ICEE_ICEE_TOT*100).format('0,0.0') + '%<br>' +
                             '<span class="text-muted">Viviendas Sin Servicio<i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Cantidad Viviendas Sin servicio ultima Vigencia"></i>: </span>' + numeral(feature.properties.ICEE_VSS_TOT).format('0,0') + '<br>' +
                         '</div>' +
                 '</div>' +

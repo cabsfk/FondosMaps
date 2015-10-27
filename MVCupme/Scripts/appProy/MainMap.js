@@ -122,8 +122,8 @@
         /*
         Descomentariar la siguiente linea cuanod este en producion y comentariar la de 14993
         */
-        //var ProSITIOS = turf.filter(glo.VSS_SITIOS, 'COD_SITIO', properties.ID_CENTRO_POBLADO);
-        var ProSITIOS = turf.filter(glo.VSS_SITIOS, 'COD_SITIO', 14993);
+        var ProSITIOS = turf.filter(glo.VSS_SITIOS, 'COD_SITIO', properties.ID_CENTRO_POBLADO);
+        //var ProSITIOS = turf.filter(glo.VSS_SITIOS, 'COD_SITIO', 14993);
 
 
         console.log(ProSITIOS.features);
