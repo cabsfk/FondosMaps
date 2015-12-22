@@ -13,7 +13,9 @@ config = {
     SEC: '4',
     CON: '5',
     EST: '6',
-    ICCE: '2'
+    ICCE: '2',
+    mill:' M'
+
 }
 
 glo = {
@@ -103,20 +105,20 @@ legend.onAdd = function (map) {
        labels = [];
 
     // loop through our density intervals and generate a label with a colored square for each interval
-    div.innerHTML += '<b>Valor ' + glo.tituloLeyenda + '</b><br>';
+    div.innerHTML += '<b>Valor ' + glo.tituloLeyenda + '</b> <br>(M=Millones) <hr>';
 
     for (var i = 0; i < Limitesleyenda.length; i++) {
         if (i == 0) {
             div.innerHTML +=
             '<i style="background:rgba(255,255,255,0.8)"></i> ' +
-            numeral(Limitesleyenda[i]).format('$0,0')  +'&ndash;' + '<br>' ;
+            numeral(Limitesleyenda[i] / 1000000).format('$0,0') + config.mill + '&ndash;' + '<br>';
         } else if ((i+1) == Limitesleyenda.length) {
             div.innerHTML +=
-            '<i style="background:' + getColor(Limitesleyenda[i] + 1) + '"></i> ' +  numeral(Limitesleyenda[i]).format('$0,0') +  ' +  <br>';
+            '<i style="background:' + getColor(Limitesleyenda[i] + 1) + '"></i> ' +  numeral(Limitesleyenda[i]/1000000).format('$0,0')+config.mill +  ' +  <br>';
         } else {
             div.innerHTML +=
             '<i style="background:' + getColor(Limitesleyenda[i] + 1) + '"></i> ' +
-            numeral(Limitesleyenda[i]).format('$0,0') + (numeral(Limitesleyenda[i + 1]).format('$0,0') ? '&ndash;' + numeral(Limitesleyenda[i + 1]).format('$0,0') + '<br>' : '+');
+            numeral(Limitesleyenda[i]/1000000).format('$0,0') + config.mill + (numeral(Limitesleyenda[i + 1]).format('$0,0') ? '&ndash;' + numeral(Limitesleyenda[i + 1] / 1000000).format('$0,0') + config.mill + '<br>' : '+');
         }
     }
     div.innerHTML += '<b>Convenciones </b><br>';

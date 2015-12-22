@@ -20,16 +20,16 @@
                 activacion = '';
                 for (i = 0; i < ProFO.features.length; i++) {
                     var feature = ProFO.features[i];
-                    feature.properties.FO = glo.arrayFondos[feature.properties.FO];
-                    feature.properties.SEC = glo.arraySectores[feature.properties.SEC];
+                    feature.properties.FO = glo.arrayFondos[feature.properties.FO] == undefined ? '-' : glo.arrayFondos[feature.properties.FO];
+                    feature.properties.SEC = glo.arraySectores[feature.properties.SEC] == undefined ? '-' : glo.arrayFondos[feature.properties.SEC];
                     feature.properties.FE = moment(feature.properties.FE).tz("America/Bogota").add(5, 'hours').format('DD/MM/YYYY');
                     htmlpopup =
                         '<div class="panel panel-default  ">' +
                               '<div class="panel-body">' +
                                            '<h6><strong  class="primary-font">' + feature.properties.PNOM + '</strong><br></h6>' +
                                         '<small>Sitio a Energizar:</small> ' + properties.NOMBRE_SITIO + '<br>' +
-                                        '<small>Beneficiarios:</small> ' + numeral(feature.properties.U).format('0,0') + '<br>' +
-                                        '<small>Valor proyecto:</small> ' + numeral(feature.properties.VP).format('$0,0') + ' <br>' +
+                                        '<small>Viviendas Beneficiadas:</small> ' + numeral(feature.properties.U).format('0,0') + '<br>' +
+                                        '<small>Valor proyecto:</small> ' + numeral(feature.properties.VP/1000000).format('$0,0') +config.mill+ ' <br>' +
                                         '<small>Fondo:</small> ' + feature.properties.FO + '<br>' +
                                         '<small>Sector:</small> ' + feature.properties.SEC + '<br>' +
                                         '<small>Estado:</small> ' + feature.properties.ES + '<br>' +
@@ -67,7 +67,7 @@
                                 '<small>Nombre del sitio:</small> ' + properties.NOMBRE_SITIO + '<br>' +
                                 '<small>Viiendas sin servicio:</small> ' + numeral(feature.properties.VSS).format('0,0') + '<br>' +
                                 '<small>Demanda Anual:</small> ' + numeral(feature.properties.DEM).format('0,0') + ' kW/h <br>' +
-                                '<small>Costo Unitario:</small> ' + numeral(feature.properties.CU).format('$0,0') + '<br>' +
+                                '<small>Costo Unitario:</small> ' + numeral(feature.properties.CU/1000000).format('$0,0') +config.mill + '<br>' +
                                 '<small>Fecha Proyecto:</small> ' + feature.properties.FE + '<br>' +
                               '</div>' +
                             '</div>';
@@ -98,8 +98,8 @@
                                 '<h6><strong  class="primary-font">' + feature.properties.NOM + '</strong><br></h6>' +
                                 '<small>Nombre del sitio:</small> ' + properties.NOMBRE_SITIO + '<br>' +
                                 '<small>Beneficiarios en todos los tipos de proyectos.</small> ' + numeral(feature.properties.BNF).format('0,0') + '<br>' +
-                                '<small>Valor proyecto:</small> ' + numeral(feature.properties.VP).format('$0,0') + ' <br>' +
-                                '<small>Valor solicitado:</small> ' + numeral(feature.properties.VS).format('$0,0') + ' <br>' +
+                                '<small>Valor proyecto:</small> ' + numeral(feature.properties.VP / 1000000).format('$0,0') + config.mill + ' <br>' +
+                                '<small>Valor solicitado:</small> ' + numeral(feature.properties.VS/1000000).format('$0,0') +config.mill+ ' <br>' +
                                 '<small>Sector:</small> ' + feature.properties.SCT + '<br>' +
                                 '<small>Fase:</small> ' + feature.properties.FP + '<br>' +
                                 '<small>Fuente de financiación:</small> ' + feature.properties.FF + '<br>' +
@@ -122,12 +122,13 @@
         /*
         Descomentariar la siguiente linea cuanod este en producion y comentariar la de 14993
         */
+        console.log(glo.VSS_SITIOS);
         var ProSITIOS = turf.filter(glo.VSS_SITIOS, 'COD_SITIO', properties.ID_CENTRO_POBLADO);
         //var ProSITIOS = turf.filter(glo.VSS_SITIOS, 'COD_SITIO', 14993);
 
 
         console.log(ProSITIOS.features);
-        
+        if (ProSITIOS.features.length > 0) {
             tabTitle = tabTitle + '<li role="presentation" class="' + activacion + '"><a href="#TabINFO" aria-controls="messages" role="tab" data-toggle="tab">PIEC</a></li>';
             tabContent = tabContent + '<div role="tabpanel" class="tab-pane ' + activacion + '" id="TabINFO">';
             activacion = '';
@@ -146,6 +147,8 @@
             htmlpopup = '<div id="contentPgINFO">' + glo.html.INFO[0] + '</div>' +
              '<div id="pageSelINFO"></div>';
             tabContent = tabContent + htmlpopup + '</div>';
+        }
+          
         
     }
     var popupContent = tabTitle + tabContent + '</div>' + '</div>';

@@ -26,20 +26,30 @@
             <div>
 
                 <!-- Nav tabs -->
-                <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#Filtro" aria-controls="Filtro" role="tab" data-toggle="tab" >
-                            <span class="glyphicon glyphicon-filter  text-primary" data-toggle="tooltip" id="FiltroColor" data-placement="top" title="" data-original-title="Filtros"></span>
-                        </a></li>
-                    
-                    <li role="presentation"><a href="#Busqueda" aria-controls="Busqueda" role="tab" data-toggle="tab">
-                           <span class="glyphicon glyphicon-search" data-toggle="tooltip" id="BusquedaColor" data-placement="top" title="" data-original-title="Busqueda"></span>
-                        </a></li>
-                </ul>
+                
 
                 <!-- Tab panes -->
-                <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="Filtro">
-
+                <div class="col-xs-3 borderancho">
+                    <!-- required for floating -->
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs tabs-left">
+                        <li class="active">
+                            <a href="#eventos" data-toggle="tab">
+                                <span class="glyphicon glyphicon-filter text-primary" aria-hidden="true" id="eventosColor" data-toggle=" tooltip" data-placement="right" title="" data-original-title="Eventos"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#tiempo" data-toggle="tab">
+                                <span class="glyphicon glyphicon-time" aria-hidden="true" id="tiempoColor" data-toggle="tooltip" data-placement="right" title="" data-original-title="Tiempo"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#espacios" data-toggle="tab">
+                                <span class="glyphicon glyphicon-picture" aria-hidden="true" id="espaciosColor" data-toggle="tooltip" data-placement="right" title="" data-original-title="Mapa"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div> 
 
                         <div class="col-xs-9">
                             <!-- Tab panes -->
@@ -87,38 +97,36 @@
                                 </div>
                                 <div class="tab-pane" id="espacios">
                                     <div class="form-group">
-                                        <label>Escala:</label>
-                                        <select class="form-control" id="EscalaMap">
-                                            <option value="Departamento">Departamento</option>
-                                            <option value="Municipio">Municipio</option>
-                                        </select>
+                                        <form style="text-align: center;" id="formAutocompl">
+                                            <h6>Ingrese el nombre del municipio o departamento de interés</h6>
+                                            <div class="input-group custom-search-form">
+                                                <input type="text" class="form-control" id="city" placeholder="Nombre Municipio">
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-default" type="button" id="BtnBusquedaMun" disabled>
+                                                        <span class="glyphicon glyphicon-search"></span>
+                                                    </button>
+                                                </span>
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-primary" type="button" id="BtnLimpiarMun">
+                                                        <span class="glyphicon glyphicon-trash"></span>
+                                                    </button>
+                                                </span>
+                                            </div><!-- /input-group -->
+                                        </form>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Escala:</label>
+                                            <select class="form-control" id="EscalaMap">
+                                                <option value="Departamento">Departamento</option>
+                                                <option value="Municipio">Municipio</option>
+                                            </select>
+                                        </div>
+                                    <hr>
                                     </div>
-
-                                </div>
                             </div>
                         </div> 
 
-                        <div class="col-xs-3">
-                            <!-- required for floating -->
-                            <!-- Nav tabs -->
-                            <ul class="nav nav-tabs tabs-right">
-                                <li class="active">
-                                    <a href="#eventos" data-toggle="tab">
-                                        <span class="glyphicon glyphicon-list-alt  text-primary" aria-hidden="true" id="eventosColor" data-toggle=" tooltip" data-placement="right" title="" data-original-title="Eventos"></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#tiempo" data-toggle="tab">
-                                        <span class="glyphicon glyphicon-time" aria-hidden="true" id="tiempoColor" data-toggle="tooltip" data-placement="right" title="" data-original-title="Tiempo"></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#espacios" data-toggle="tab">
-                                        <span class="glyphicon glyphicon-picture" aria-hidden="true" id="espaciosColor" data-toggle="tooltip" data-placement="right" title="" data-original-title="Mapa"></span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>                        
+                                            
                         <br>
 
                         <div >
@@ -128,29 +136,8 @@
                                 <span class="glyphicon glyphicon-search"></span> Buscar</button>
                         </div>
                         
-                    </div>
-                    
-                    <div role="tabpanel" class="tab-pane" id="Busqueda">
-                        <br>
-                        <form style="text-align: center;" id="formAutocompl">
-                            <h5>Ingrese el nombre del municipio o departamento de interes</h5>
-                            <div class="input-group custom-search-form">
-                                <input type="text" class="form-control" id="city" placeholder="Nombre Municipio">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button" id="BtnBusquedaMun" disabled>
-                                        <span class="glyphicon glyphicon-search"></span>
-                                    </button>
-                                </span>
-                                <span class="input-group-btn">
-                                    <button class="btn btn-primary" type="button" id="BtnLimpiarMun">
-                                        <span class="glyphicon glyphicon-trash"></span>
-                                    </button>
-                                </span>
-                            </div><!-- /input-group -->
-                        </form>
+                     
 
-                    </div>
-                </div>
 
             </div>
             
@@ -162,7 +149,7 @@
                 <h5><b><p class="text-center">Consolidado Nacional <br>Según la Búsqueda</p></b></h5>
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active"><a href="#tabValorFavorable" role="tab" data-toggle="tab">Favorable</a></li>
-                    <li role="presentation"><a href="#tabValorAsig" role="tab" data-toggle="tab">Asignacion</a></li>
+                    <li role="presentation"><a href="#tabValorAsig" role="tab" data-toggle="tab">Asignación</a></li>
                     <li role="presentation"><a href="#tabValorTotal" role="tab" data-toggle="tab">Total</a></li>
                 </ul>
                 <!-- Tab panes -->
@@ -171,11 +158,11 @@
                     <div role="tabpanel" class="tab-pane active" id="tabValorFavorable">
                         <hr>
                         <div class="row">
-                            <div class="col-md-5"><small>Valor (Corriente):</small> <i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Valor corriente por año"></i></div>
+                            <div class="col-md-5"> <i  data-toggle="tooltip" data-placement="top" title="Valor corriente por año">Valor (Corriente):</i></div>
                             <div class="col-md-7"><b id="lbValorFav"></b></div>
                         </div>
                         <div class="row">
-                            <div class="col-md-5"><small>Valor (Constante):</small><i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Valor indexado con el IPC a 31 de diciembre de cada año"></i></div>
+                            <div class="col-md-5"><i  data-toggle="tooltip" data-placement="top" title="Valor indexado con el IPC a 31 de diciembre de cada año">Valor (Constante):</i></div>
                             <div class="col-md-7"><b id="lbValorFavCons"></b></div>
                         </div>
                         <div class="row">
@@ -190,11 +177,11 @@
                     <div role="tabpanel" class="tab-pane" id="tabValorAsig">
                         <hr>
                         <div class="row">
-                            <div class="col-md-5"><small>Valor (Corriente):</small><i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Valor corriente por año"></i></div>
+                            <div class="col-md-5"><i data-toggle="tooltip" data-placement="top" title="Valor corriente por año">Valor (Corriente):</></i></div>
                             <div class="col-md-7"><b id="lbValorAsig"></b></div>
                         </div>
                         <div class="row">
-                            <div class="col-md-5"><small>Valor (Constante):</small><i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Valor indexado con el IPC a 31 de diciembre de cada año"></i></div>
+                            <div class="col-md-5"><i  data-toggle="tooltip" data-placement="top" title="Valor indexado con el IPC a 31 de diciembre de cada año">Valor (Constante):</i></div>
                             <div class="col-md-7"><b id="lbValorAsigCons"></b></div>
                         </div>
                         <div class="row">
@@ -209,11 +196,11 @@
                     <div role="tabpanel" class="tab-pane " id="tabValorTotal">
                         <hr>
                         <div class="row">
-                            <div class="col-md-5"><small>Valor (Corriente):</small><i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Valor corriente por año"></i></div>
+                            <div class="col-md-5"><i  data-toggle="tooltip" data-placement="top" title="Valor corriente por año">Valor (Corriente):</i></div>
                             <div class="col-md-7"><b id="ValorConTotal"></b></div>
                         </div>
                         <div class="row">
-                            <div class="col-md-5"><small>Valor (Constante):</small><i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Valor indexado con el IPC a 31 de diciembre de cada año"></i></div>
+                            <div class="col-md-5"><i  data-toggle="tooltip" data-placement="top" title="Valor indexado con el IPC a 31 de diciembre de cada año">Valor (Constante):</i></div>
                             <div class="col-md-7"><b id="ValorConTotalCons"></b></div>
                         </div>
                         <div class="row">
@@ -225,7 +212,8 @@
                             <div class="col-md-7"><b id="CantProyConTotal"></b></div>
                         </div>
                     </div>
-                </div>               
+                </div>  
+                <h5><b><p class="text-center">(<span id="labelfechaini"></span> - <span id="labelfechafin"></span>)</p></b></h5>             
             </form>
         </div>
     </div>

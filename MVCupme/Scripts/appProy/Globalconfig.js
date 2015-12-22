@@ -17,7 +17,8 @@ config = {
     PERS: '3',
     urlHostDP: "/arcgis/rest/services/UPME_BC/UPME_BC_Sitios_UPME_Division_Politica/",
     urlHostPIEC: "/arcgis/rest/services/UPME_EN/UPME_EN_PIEC_ICEE/",
-    VSS_SITIOS:'5'
+    VSS_SITIOS: '5',
+    mill:' M'
     
 }
 
@@ -313,7 +314,7 @@ $(function () {
         enableFiltering: true,
         selectAllText: 'Todos',
         enableCaseInsensitiveFiltering: true,
-        buttonWidth: '150px',
+        buttonWidth: '200px',
         dropRight: false,
         maxHeight: 250,
         filterPlaceholder: 'Buscar...',

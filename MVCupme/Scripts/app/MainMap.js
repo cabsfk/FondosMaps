@@ -1,6 +1,15 @@
 ﻿
 var lyrTotalProyectos;
-
+function getDPTO(cod) {
+    var dpto = turf.filter(glo.jsonDto, 'CODIGO_DEP', cod);
+    //console.log(dpto);
+    if (dpto.features.length > 0) {
+        return dpto.features[0].properties.NOMBRE;
+    } else {
+        return '';
+    }
+    
+}
 
     
     function onEachFeature(feature, layer) {
@@ -9,10 +18,12 @@ var lyrTotalProyectos;
             mouseout: resetHighlight,
             click: zoomToFeature
         });
-        var textTitle="",nombre;
+        var textTitle="",nombre,dpto='';
         if ($("#EscalaMap").val() == "Municipio") {
             textTitle = "Municipio";
             nombre = feature.properties.MPIO_CNMBR;
+            dpto = getDPTO(feature.properties.DPTO_CCDGO) + ' - ';
+            //console.log(dpto.features[0].properties.NOMBRE);
         } else if ($("#EscalaMap").val() == "Departamento")  {
             textTitle = "Departamento";
             nombre = feature.properties.NOMBRE;
@@ -22,15 +33,15 @@ var lyrTotalProyectos;
         htmlpopup =
                '<div class="panel panel-primary">' +
                        '<div class="popupstyle">' +
-                            '<center><h6 class="text-success">' + nombre + '</h6></center>' +
-                            '<span class="text-muted">Valor Proyecto <i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Valor total del proyecto"></i></span><small> (Corriente<i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Valor corriente por año"></i>-Constante<i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Valor indexado con el IPC a 31 de diciembre de cada año"></i>):</small>  <br>' + numeral(feature.properties.VPU).format('$0,0') + ' - ' + numeral(feature.properties.VPUA).format('$0,0') + '<br>' +
-                            '<span class="text-muted">Valor Solicitado <i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Recursos solicitados a los diferentes fondos"></i></span><small> (Corriente<i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Valor corriente por año"></i>-Constante<i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Valor indexado con el IPC a 31 de diciembre de cada año"></i>): </small><br>' + numeral(feature.properties.VSU).format('$0,0') + ' - ' + numeral(feature.properties.VSUA).format('$0,0') + '<br>' +
-                            '<span class="text-muted">Valor Asignado <i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Recursos aprobados mediante actas o resoluciones para financiar proyectos de inversión con cargo a los recursos de los diferentes fondos"></i></span><small> (Corriente<i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Valor corriente por año"></i>-Constante<i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Valor indexado con el IPC a 31 de diciembre de cada año"></i>): </small><br>' + numeral(feature.properties.VASU).format('$0,0') + ' - ' + numeral(feature.properties.VASUA).format('$0,0') + '<br>' +
-                            '<span class="text-muted">Beneficiados: </span>' + numeral(feature.properties.U).format('0,0') + '<br>' +
+                            '<center><h6 class="text-success">' + dpto  + nombre + '</h6></center>' +
+                            '<span class="text-muted"><i  data-toggle="tooltip" data-placement="top" title="Valor total del proyecto">Valor Proyecto</i></span><small> (<i  data-toggle="tooltip" data-placement="top" title="Valor corriente por año">Corriente</i>-<i data-toggle="tooltip" data-placement="top" title="Valor indexado con el IPC a 31 de diciembre de cada año">Constante</i>):</small>  <br>' + numeral(feature.properties.VPU / 1000000).format('$0,0') + config.mill + ' - ' + numeral(feature.properties.VPUA / 1000000).format('$0,0') + config.mill + '<br>' +
+                            '<span class="text-muted"><i data-toggle="tooltip" data-placement="top" title="Recursos solicitados a los diferentes fondos">Valor Solicitado</i></span><small> (<i  data-toggle="tooltip" data-placement="top" title="Valor corriente por año">Corriente</i>-<i data-toggle="tooltip" data-placement="top" title="Valor indexado con el IPC a 31 de diciembre de cada año">Constante</i>):</small><br>' + numeral(feature.properties.VSU / 1000000).format('$0,0') + config.mill + ' - ' + numeral(feature.properties.VSUA / 1000000).format('$0,0') + config.mill + '<br>' +
+                            '<span class="text-muted"><i data-toggle="tooltip" data-placement="top" title="Recursos aprobados mediante actas o resoluciones para financiar proyectos de inversión con cargo a los recursos de los diferentes fondos">Valor Asignado</i></span><small> (<i  data-toggle="tooltip" data-placement="top" title="Valor corriente por año">Corriente</i>-<i data-toggle="tooltip" data-placement="top" title="Valor indexado con el IPC a 31 de diciembre de cada año">Constante</i>):</small><br>' + numeral(feature.properties.VASU / 1000000).format('$0,0') + config.mill + ' - ' + numeral(feature.properties.VASUA / 1000000).format('$0,0') + config.mill + '<br>' +
+                            '<span class="text-muted">Viviendas Beneficiadas: </span>' + numeral(feature.properties.U).format('0,0') + '<br>' +
                             '<span class="text-muted">Cantidad proyectos: </span>' + numeral(feature.properties.CANT).format('0,0') + '<br>' +
-                            '<span class="text-muted">Viviendas Totales<i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Cantidad total de viviendas segun ultima vigencia"></i>: </span>' + numeral(feature.properties.ICEE_VIVTOT).format('0,0') + '<br>' +
-                            '<span class="text-muted">ICEE<i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Indice de. Cobertura del Servicio de Energía Eléctrica"></i>: </span>' + numeral(feature.properties.ICEE_ICEE_TOT*100).format('0,0.0') + '%<br>' +
-                            '<span class="text-muted">Viviendas Sin Servicio<i class="fa fa-question-circle fa-1x text-info " data-toggle="tooltip" data-placement="top" title="Cantidad Viviendas Sin servicio ultima Vigencia"></i>: </span>' + numeral(feature.properties.ICEE_VSS_TOT).format('0,0') + '<br>' +
+                            '<span class="text-muted"><i data-toggle="tooltip" data-placement="top" title="Cantidad total de viviendas segun ultima vigencia">Viviendas Totales</i>: </span>' + numeral(feature.properties.ICEE_VIVTOT).format('0,0') + '<br>' +
+                            '<span class="text-muted"><i data-toggle="tooltip" data-placement="top" title="Indice de. Cobertura del Servicio de Energía Eléctrica">ICEE</i>: </span>' + numeral(feature.properties.ICEE_ICEE_TOT*100).format('0,0.0') + '%<br>' +
+                            '<span class="text-muted"><i data-toggle="tooltip" data-placement="top" title="Cantidad Viviendas Sin servicio PIEC ultima Vigencia">Viviendas Sin Servicio (PIEC)</i>: </span>' + numeral(feature.properties.ICEE_VSS_TOT).format('0,0') + '<br>' +
                         '</div>' +
                 '</div>' +
             '</div>';
@@ -47,14 +58,13 @@ var lyrTotalProyectos;
         if (feature.properties.VPU != 0) {
           var textlabel = '<h6>' + nombre + '</h6>' +
           '<small class="text-muted">Mapeado por Valor ' + glo.tituloLeyenda + ' Constante</small>.<br>' +
-           numeral(feature.properties[glo.VarMapeo]).format('$0,0')+ '<br>';
+           numeral(feature.properties[glo.VarMapeo]/1000000).format('$0,0')+config.mill + '<br>';
 
         }else{
             var textlabel = '<h6>' + nombre + '</h6>';
         }
         
-        layer.bindLabel( textlabel,
-            { 'noHide': true });
+        layer.bindLabel( textlabel,{ 'noHide': true });
     }
 
 

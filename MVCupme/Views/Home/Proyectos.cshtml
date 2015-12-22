@@ -23,13 +23,9 @@
 
         <div class="panel-body">
             <div>
-                <div class="row">
-                    <div class="col-xs-9">
-                        <!-- Tab panes -->
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="eventos">
+                
                                 <b><center>TIPO PROYECTO</center></b>
-                                <hr>
+                                
                                 <div class="col-sm-12">
                                     <div class="checkbox">
                                         <label>
@@ -42,7 +38,7 @@
                                         <label>
                                             <input type="checkbox" value="" checked id="checkPCR">
                                             <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
-                                            PECORS
+                                            PACO
                                         </label>
                                     </div>
                                     <div class="checkbox">
@@ -56,85 +52,46 @@
                                         <label>Fondo: </label><br>
                                         <select class="form-control" id="SelctFondo" multiple="multiple"></select>
                                     </div>
-                                </div>
-                                <br>
-                            </div>
-                            <div class="tab-pane " id="espacios">
-                                <br>
-                                <form style="text-align: center;" id="formAutocompl">
-                                    <h5>Ingrese el nombre del municipio o departamento de interes</h5>
                                     <hr>
-                                    <div class="input-group custom-search-form">
-                                        <input type="text" class="form-control" id="city" placeholder="Nombre Municipio">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-default" type="button" id="BtnBusquedaMun" disabled>
-                                                <span class="glyphicon glyphicon-search"></span>
-                                            </button>
-                                        </span>
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-primary" type="button" id="BtnLimpiarMun">
-                                                <span class="glyphicon glyphicon-trash"></span>
-                                            </button>
-                                        </span>
-                                    </div><!-- /input-group -->
-                                </form>
+                                    <b><center>FECHA</center></b>
+                                    <div class="form-group">
+                                        <label>Fecha Inicio</label>
+                                        <div class="input-group date">
+                                            <input type="text" class=" form-control hasdatepicker" id="date_ini" data-container="body" data-toggle="popover" data-trigger="focus" data-animation="true" />
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Fecha Fin</label>
+                                        <div class="input-group date">
+                                            <input type="text" class=" form-control hasdatepicker" id="date_fin" data-container="body" data-toggle="popover" data-trigger="focus" data-animation="true" />
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <form style="text-align: center;" id="formAutocompl">
+                                        <h5>Ingrese el nombre del municipio o departamento de interés</h5>
+                                        <div class="input-group custom-search-form">
+                                            <input type="text" class="form-control" id="city" placeholder="Nombre Municipio">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default" type="button" id="BtnBusquedaMun" disabled>
+                                                    <span class="glyphicon glyphicon-search"></span>
+                                                </button>
+                                            </span>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-primary" type="button" id="BtnLimpiarMun">
+                                                    <span class="glyphicon glyphicon-trash"></span>
+                                                </button>
+                                            </span>
+                                        </div><!-- /input-group -->
+                                    </form>
+                                </div>
                                 <br>
-                            </div>
-                            
-                            <div class="tab-pane" id="tiempo">
-                                <b><center>RANGO TIEMPO</center></b>
-                                <hr>
-                                <div class="form-group">
-                                    <label>Fecha Inicio</label>
-                                    <div class="input-group date">
-                                        <input type="text" class=" form-control hasdatepicker" id="date_ini" data-container="body" data-toggle="popover" data-trigger="focus" data-animation="true" />
-                                        <span class="input-group-addon">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Fecha Fin</label>
-                                    <div class="input-group date">
-                                        <input type="text" class=" form-control hasdatepicker" id="date_fin" data-container="body" data-toggle="popover" data-trigger="focus" data-animation="true" />
-                                        <span class="input-group-addon">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div class="col-xs-3">
-                        <!-- required for floating -->
-                        <!-- Nav tabs -->
-                        <ul class="nav nav-tabs tabs-right">
-                            <li class="active">
-                                <a href="#eventos" data-toggle="tab">
-                                    <span class="glyphicon glyphicon-list-alt text-primary " id="eventosColor" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="" data-original-title="Estados"></span>
-                                </a>
-                            </li>
-                            <li >
-                                <a href="#espacios" data-toggle="tab">
-                                    <span class="glyphicon glyphicon-picture " id="espaciosColor" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="" data-original-title="Lugar"></span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#tiempo" data-toggle="tab">
-                                    <span class="glyphicon glyphicon-time  " id="tiempoColor" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="" data-original-title="Fechas"></span>
-                                </a>
-                            </li>
-                            
-                        </ul>
-                    </div>
-                    <br>
-                    <hr>
-                    
-                </div>
-
-            </div>
+                  
 
         </div>
 
