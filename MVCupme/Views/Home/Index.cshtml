@@ -1,317 +1,283 @@
-﻿
-<div id="map"></div>
+﻿<div id="map"></div>
 <div id="info-pane" class="leaflet-bar"></div>
 <div id="BtnMonstrarConven">
     <button type="button" class="btn btn-primary btn-sm" id="MostrarConvenciones">
         <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span> <small id="textlegend">Ocultar</small>
-</button>
+    </button>
 </div>
-<div class="col-sm-2 col-md-2" id="panel_formulario" style="max-width:350px;min-width:300px;">
+<div id="panel_formulario" style="max-width:340px;min-width:300px;">
     <div class="panel panel-primary">
         <div class="panel-heading">
             <h3 class="panel-title">
                 <center>
                     <button type="button" class="btn btn-default active">
                         <span class="glyphicon glyphicon-signal"></span> @Html.ActionLink("Indicadores", "", "")
-
                     </button>
-                <button type="button" class="btn btn-default">
-                    <span class="glyphicon glyphicon-edit"></span>@Html.ActionLink("Proyectos", "Proyectos", "Home")
-
-                </button>
-                    </center>
+                    <button type="button" class="btn btn-default">
+                        <span class="glyphicon glyphicon-edit"></span>@Html.ActionLink("Proyectos", "Proyectos", "Home")
+                    </button>
+                </center>
             </h3>
         </div>
         <div class="panel-body">
             <div>
-
                 <!-- Nav tabs -->
+                <div class="form-group pull-right" style="margin-right:50px">
+                    <label>Sectores: </label>
+                    <select class="form-control" id="SelctSectores" multiple="multiple"></select>
+                </div>
+                <div class="form-group pull-right" style="margin-right:50px">
+                    <label>Fondo: </label>
+                    <select class="form-control" id="SelctFondo" multiple="multiple"></select>
+                </div>
+                <div class="form-group pull-right" style="margin-right:50px">
+                    <label>Concepto: </label>
+                    <select class="form-control" id="SelctConcepto" multiple="multiple"></select>
+                </div>
+                <div class="form-group pull-right" style="margin-right:50px">
+                    <label>Estado: </label>
+                    <select class="form-control" id="SelctEstado" multiple="multiple"></select>
+                </div>
                 
+                <div class="form-group">
 
-                <!-- Tab panes -->
-                <div class="col-xs-3 borderancho">
-                    <!-- required for floating -->
-                    <!-- Nav tabs -->
-                    <ul class="nav nav-tabs tabs-left">
-                        <li class="active">
-                            <a href="#eventos" data-toggle="tab">
-                                <span class="glyphicon glyphicon-filter text-primary" aria-hidden="true" id="eventosColor" data-toggle=" tooltip" data-placement="right" title="" data-original-title="Eventos"></span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#tiempo" data-toggle="tab">
-                                <span class="glyphicon glyphicon-time" aria-hidden="true" id="tiempoColor" data-toggle="tooltip" data-placement="right" title="" data-original-title="Tiempo"></span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#espacios" data-toggle="tab">
-                                <span class="glyphicon glyphicon-picture" aria-hidden="true" id="espaciosColor" data-toggle="tooltip" data-placement="right" title="" data-original-title="Mapa"></span>
-                            </a>
-                        </li>
-                    </ul>
-                </div> 
-
-                        <div class="col-xs-9">
-                            <!-- Tab panes -->
-                            <div class="tab-content">
-                                <div class="tab-pane active" id="eventos">
-                                    <div>
-                                        <label>Sectores: </label>
-                                        <select class="form-control" id="SelctSectores" multiple="multiple"></select>
-                                    </div>
-                                    <div>
-                                        <label>Fondo: </label>
-                                        <select class="form-control" id="SelctFondo" multiple="multiple">
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label>Concepto: </label>
-                                        <select class="form-control" id="SelctConcepto" multiple="multiple"></select>
-                                    </div>
-                                    <div>
-                                        <label>Estado: </label>
-                                        <select class="form-control" id="SelctEstado" multiple="multiple">
-                                        </select>
-                                    </div>
-                                    <br>
-                                </div>
-                                <div class="tab-pane" id="tiempo">
-                                    <div class="form-group">
-                                        <label>Fecha Inicio</label>
-                                        <div class="input-group date">
-                                            <input type="text" class=" form-control hasdatepicker" id="date_ini" data-container="body" data-toggle="popover" data-trigger="focus" data-animation="true" />
-                                            <span class="input-group-addon">
-                                                <span class="glyphicon glyphicon-calendar"></span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Fecha Fin</label>
-                                        <div class="input-group date">
-                                            <input type="text" class=" form-control hasdatepicker" id="date_fin" data-container="body" data-toggle="popover" data-trigger="focus" data-animation="true" />
-                                            <span class="input-group-addon">
-                                                <span class="glyphicon glyphicon-calendar"></span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane" id="espacios">
-                                    <div class="form-group">
-                                        <form style="text-align: center;" id="formAutocompl">
-                                            <h6>Ingrese el nombre del municipio o departamento de interés</h6>
-                                            <div class="input-group custom-search-form">
-                                                <input type="text" class="form-control" id="city" placeholder="Nombre Municipio">
-                                                <span class="input-group-btn">
-                                                    <button class="btn btn-default" type="button" id="BtnBusquedaMun" disabled>
-                                                        <span class="glyphicon glyphicon-search"></span>
-                                                    </button>
-                                                </span>
-                                                <span class="input-group-btn">
-                                                    <button class="btn btn-primary" type="button" id="BtnLimpiarMun">
-                                                        <span class="glyphicon glyphicon-trash"></span>
-                                                    </button>
-                                                </span>
-                                            </div><!-- /input-group -->
-                                        </form>
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Escala:</label>
-                                            <select class="form-control" id="EscalaMap">
-                                                <option value="Departamento">Departamento</option>
-                                                <option value="Municipio">Municipio</option>
-                                            </select>
-                                        </div>
-                                    <hr>
-                                    </div>
-                            </div>
-                        </div> 
-
-                                            
-                        <br>
-
-                        <div >
-                            <hr>
-                            <br>
-                            <button type="button" id="BuscarMapa" class="btn btn-success btn-block">
-                                <span class="glyphicon glyphicon-search"></span> Buscar</button>
+                    <select id="EscalaMap" class="form-control pull-right " style="max-width:150px;margin-right:50px">
+                        <option value="Departamento">Departamento</option>
+                        <option value="Municipio">Municipio</option>
+                    </select>
+                    <label class="pull-right">Escala: </label>
+                </div>
+                <div class="form-group">
+                    <form style="text-align: center;" id="formAutocompl">
+                        <h6 class="pull-left">Ingrese el nombre del municipio o departamento</h6>
+                        <div class="input-group custom-search-form">
+                            <input type="text" class="form-control" id="city" placeholder="Nombre Municipio">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" id="BtnBusquedaMun" disabled>
+                                    <span class="glyphicon glyphicon-search"></span>
+                                </button>
+                            </span>
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary" type="button" id="BtnLimpiarMun">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </span>
                         </div>
-                        
-                     
-
-
-            </div>
-            
-            
-            
-        </div>
-        <div class="panel-footer">
-            <form>
-                <h5><b><p class="text-center">Consolidado Nacional <br>Según la Búsqueda</p></b></h5>
-                <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#tabValorFavorable" role="tab" data-toggle="tab">Favorable</a></li>
-                    <li role="presentation"><a href="#tabValorAsig" role="tab" data-toggle="tab">Asignación</a></li>
-                    <li role="presentation"><a href="#tabValorTotal" role="tab" data-toggle="tab">Total</a></li>
-                </ul>
-                <!-- Tab panes -->
-                <div class="tab-content">
+                        <!-- /input-group -->
+                    </form>
+                    <div class="col-md-12">
+                        <div class="form-group col-md-6">
+                            <label>Fecha Inicio</label>
+                            <div class="input-group date">
+                                <input type="text" class=" form-control hasdatepicker" id="date_ini" data-container="body" data-toggle="popover" data-trigger="focus" data-animation="true" />
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Fecha Fin</label>
+                            <div class="input-group date">
+                                <input type="text" class=" form-control hasdatepicker" id="date_fin" data-container="body" data-toggle="popover" data-trigger="focus" data-animation="true" />
+                            </div>
+                        </div>
+                    </div>    
                     
-                    <div role="tabpanel" class="tab-pane active" id="tabValorFavorable">
-                        <hr>
-                        <div class="row">
-                            <div class="col-md-5"> <i  data-toggle="tooltip" data-placement="top" title="Valor corriente por año">Valor (Corriente):</i></div>
-                            <div class="col-md-7"><b id="lbValorFav"></b></div>
+                    <div class="col-md-12" style="margin-top:15px">
+                        <button type="button" id="BuscarMapa" class="btn btn-success btn-block" >
+                            <span class="glyphicon glyphicon-search"></span> Buscar
+                        </button>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="panel-footer">
+                <form>
+                    <h5>
+                        <b>
+                            <p class="text-center">Consolidado Nacional <br>Según la Búsqueda</p>
+                        </b>
+                    </h5>
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#tabValorFavorable" role="tab" data-toggle="tab">Favorable</a></li>
+                        <li role="presentation"><a href="#tabValorAsig" role="tab" data-toggle="tab">Asignación</a></li>
+                        <li role="presentation"><a href="#tabValorTotal" role="tab" data-toggle="tab">Total</a></li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="tabValorFavorable">
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-6"> <i data-toggle="tooltip" data-placement="top" title="Valor corriente por año">Valor (Corriente en $M):</i></div>
+                                <div class="col-md-6"><b id="lbValorFav"></b></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6"><i data-toggle="tooltip" data-placement="top" title="Valor indexado con el IPC a 31 de diciembre de cada año">Valor (Constante en $M):</i></div>
+                                <div class="col-md-6"><b id="lbValorFavCons"></b></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6"><small>Num. Beneficiarios:</small></div>
+                                <div class="col-md-6"><b id="lbBeneficiariosFav"></b></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6"><small>Cant. de Proyectos:</small></div>
+                                <div class="col-md-6"><b id="lbCantProyFav"></b></div>
+                            </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-5"><i  data-toggle="tooltip" data-placement="top" title="Valor indexado con el IPC a 31 de diciembre de cada año">Valor (Constante):</i></div>
-                            <div class="col-md-7"><b id="lbValorFavCons"></b></div>
+                        <div role="tabpanel" class="tab-pane" id="tabValorAsig">
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-6"><i data-toggle="tooltip" data-placement="top" title="Valor corriente por año">Valor (Corriente en $M)::</></i></div>
+                                <div class="col-md-6"><b id="lbValorAsig"></b></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6"><i data-toggle="tooltip" data-placement="top" title="Valor indexado con el IPC a 31 de diciembre de cada año">Valor (Constante en $M):</i></div>
+                                <div class="col-md-6"><b id="lbValorAsigCons"></b></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6"><small>Num. Beneficiarios:</small></div>
+                                <div class="col-md-6"><b id="lbBeneficiarioAsig"></b></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6"><small>Cant. de Proyectos:</small></div>
+                                <div class="col-md-6"><b id="lbCantProyoAsig"></b></div>
+                            </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-5"><small>Num. Beneficiarios:</small></div>
-                            <div class="col-md-7"><b id="lbBeneficiariosFav"></b></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-5"><small>Cant. de Proyectos:</small></div>
-                            <div class="col-md-7"><b id="lbCantProyFav"></b></div>
+                        <div role="tabpanel" class="tab-pane " id="tabValorTotal">
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-6"><i data-toggle="tooltip" data-placement="top" title="Valor corriente por año">Valor (Corriente en $M):</i></div>
+                                <div class="col-md-6"><b id="ValorConTotal"></b></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6"><i data-toggle="tooltip" data-placement="top" title="Valor indexado con el IPC a 31 de diciembre de cada año">Valor (Constante en $M):</i></div>
+                                <div class="col-md-6"><b id="ValorConTotalCons"></b></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6"><small>Num. Beneficiarios:</small></div>
+                                <div class="col-md-6"><b id="BeneficiariosConTotal"></b></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6"><small>Cant. de Proyectos:</small></div>
+                                <div class="col-md-6"><b id="CantProyConTotal"></b></div>
+                            </div>
                         </div>
                     </div>
-                    <div role="tabpanel" class="tab-pane" id="tabValorAsig">
-                        <hr>
-                        <div class="row">
-                            <div class="col-md-5"><i data-toggle="tooltip" data-placement="top" title="Valor corriente por año">Valor (Corriente):</></i></div>
-                            <div class="col-md-7"><b id="lbValorAsig"></b></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-5"><i  data-toggle="tooltip" data-placement="top" title="Valor indexado con el IPC a 31 de diciembre de cada año">Valor (Constante):</i></div>
-                            <div class="col-md-7"><b id="lbValorAsigCons"></b></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-5"><small>Num. Beneficiarios:</small></div>
-                            <div class="col-md-7"><b id="lbBeneficiarioAsig"></b></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-5"><small>Cant. de Proyectos:</small></div>
-                            <div class="col-md-7"><b id="lbCantProyoAsig"></b></div>
-                        </div>
-                    </div>
-                    <div role="tabpanel" class="tab-pane " id="tabValorTotal">
-                        <hr>
-                        <div class="row">
-                            <div class="col-md-5"><i  data-toggle="tooltip" data-placement="top" title="Valor corriente por año">Valor (Corriente):</i></div>
-                            <div class="col-md-7"><b id="ValorConTotal"></b></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-5"><i  data-toggle="tooltip" data-placement="top" title="Valor indexado con el IPC a 31 de diciembre de cada año">Valor (Constante):</i></div>
-                            <div class="col-md-7"><b id="ValorConTotalCons"></b></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-5"><small>Num. Beneficiarios:</small></div>
-                            <div class="col-md-7"><b id="BeneficiariosConTotal"></b></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-5"><small>Cant. de Proyectos:</small></div>
-                            <div class="col-md-7"><b id="CantProyConTotal"></b></div>
-                        </div>
-                    </div>
-                </div>  
-                <h5><b><p class="text-center">(<span id="labelfechaini"></span> - <span id="labelfechafin"></span>)</p></b></h5>             
-            </form>
+                    <h5>
+                        <b>
+                            <p class="text-center">(<span id="labelfechaini"></span> - <span id="labelfechafin"></span>)</p>
+                        </b>
+                    </h5>
+                </form>
+            </div>
         </div>
     </div>
 </div>
-
-<div class="col-sm-2 col-md-2" id="panel_superDerecho" style="max-width:400px;min-width:360px;">
-    <div class="panel panel-primary" >
-        
+    <div class="col-sm-2 col-md-2" id="panel_superDerecho" style="max-width:400px;min-width:360px;">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-primary btn-xs" id="closePanelDem">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </button>
+                </div>
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#PieSectores" aria-controls="PieSectores" role="tab" data-toggle="tab">Sectores</a></li>
+                    <li role="presentation"><a href="#PieFondo" aria-controls="PieFondo" role="tab" data-toggle="tab">Fondos</a></li>
+                    <li role="presentation"><a href="#PieConcepto" aria-controls="PieConcepto" role="tab" data-toggle="tab">Concepto/Estado</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="PieSectores">
+                        <center>
+                            <div id="containerSectores" style="min-width: 250px; height: 250px; margin: 0 auto"></div>
+                        </center>
+                    </div>
+                    <div role="tabpanel" class="tab-pane " id="PieFondo">
+                        <center>
+                            <div id="containerFondos" style="min-width: 250px; height: 250px; margin: 0 auto"></div>
+                        </center>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="PieConcepto">
+                        <center>
+                            <div id="containerConcepto" style="min-width: 250px; height: 250px; margin: 0 auto"></div>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="carousel-panel-generic" style="width:200px">
+        <div id="myCarousel" class="carousel slide">
+            <ol class="carousel-indicators">
+                <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                <li data-target="#myCarousel" data-slide-to="1"></li>
+            </ol>
+            <!-- Carousel items -->
+            <div class="carousel-inner">
+                <div class="item active">
+                    <div class="row-fluid">
+                        <div class="col-sm-6 col-md-6" id="BaseESRIStreets" value="Streets">
+                            <a href="#" class="thumbnail">
+                                <img src="~/images/baselayers/calles.PNG" style="max-width:90%; ">
+                                <div class="carousel-caption">
+                                    <center>
+                                        <h6>ESRI Streets</h6>
+                                    </center>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-sm-6 col-md-6" id="BaseESRISatellite" value="Imagery">
+                            <a href="#" class="thumbnail">
+                                <img src="~/images/baselayers/satelite.PNG" style="max-width:90%;">
+                                <div class="carousel-caption">
+                                    <center>
+                                        <h6 style="color:rgba(255, 255, 255,1)">ESRI Satelite</h6>
+                                    </center>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <!--/row-fluid-->
+                </div>
+                <!--/item-->
+                <div class="item">
+                    <div class="row-fluid">
+                        <div class="col-sm-6 col-md-6" id="BaseESRITopo" value="Topographic">
+                            <a href="#" class="thumbnail">
+                                <img src="~/images/baselayers/topografic.PNG" style="max-width:90%;">
+                                <div class="carousel-caption">
+                                    <center>
+                                        <h6>ESRI Topographic</h6>
+                                    </center>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-sm-6 col-md-6" id="BaseOSM" value="OSM">
+                            <a href="#" class="thumbnail">
+                                <img src="~/images/baselayers/OSM.PNG" style="max-width:90%;">
+                                <div class="carousel-caption">
+                                    <center>
+                                        <h6>OSM</h6>
+                                    </center>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <!--/row-fluid-->
+                </div>
+                <!--/item-->
+            </div>
+            <!--/carousel-inner-->
+            <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left"></span>
+            </a>
+            <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+            </a>
+        </div>
+        <!--/myCarousel-->
+    </div>
+    <div class='mouse-position panel hide'>
         <div class="panel-body">
-            <div class="pull-right">
-                <button type="button" class="btn btn-primary btn-xs" id="closePanelDem">
-                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                </button>
-            </div>
-            <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active"><a href="#PieSectores" aria-controls="PieSectores" role="tab" data-toggle="tab">Sectores</a></li>
-                <li role="presentation"><a href="#PieFondo" aria-controls="PieFondo" role="tab" data-toggle="tab">Fondos</a></li>
-                <li role="presentation"><a href="#PieConcepto" aria-controls="PieConcepto" role="tab" data-toggle="tab">Concepto/Estado</a></li>
-            </ul>
-            <div class="tab-content">
-                <div role="tabpanel" class="tab-pane active" id="PieSectores">
-                    <center>
-                        <div id="containerSectores" style="min-width: 250px; height: 250px; margin: 0 auto"></div>
-                    </center>
-                </div>
-                <div role="tabpanel" class="tab-pane " id="PieFondo">
-                    <center>
-                        <div id="containerFondos" style="min-width: 250px; height: 250px; margin: 0 auto"></div>
-                    </center>
-                </div>
-                <div role="tabpanel" class="tab-pane" id="PieConcepto">
-                    <center>
-                        <div id="containerConcepto" style="min-width: 250px; height: 250px; margin: 0 auto"></div>
-                     </center>
-                </div>
-            </div>
+            <h6> <b id='mousemove'><b /></h6>
         </div>
     </div>
- </div>
-
-
-
-
-<div id="carousel-panel-generic" style="width:230px">
-            <div id="myCarousel" class="carousel slide">
-                <ol class="carousel-indicators">
-                    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-                    <li data-target="#myCarousel" data-slide-to="1"></li>
-                </ol>
-                <!-- Carousel items -->
-                <div class="carousel-inner">
-                    <div class="item active">
-                        <div class="row-fluid">
-                            <div class="col-sm-6 col-md-6" id="BaseESRIStreets" value="Streets">
-                                <a href="#" class="thumbnail">
-                                    <img src="~/images/baselayers/calles.PNG" style="max-width:100%;">
-                                    <div class="carousel-caption"><center><h6>ESRI Streets</h6></center></div>
-                                </a>
-                            </div>
-                            <div class="col-sm-6 col-md-6" id="BaseESRISatellite" value="Imagery">
-                                <a href="#" class="thumbnail">
-                                    <img src="~/images/baselayers/satelite.PNG" style="max-width:100%;">
-                                    <div class="carousel-caption"><center><h6 style="color:rgba(255, 255, 255,1)">ESRI Satelite</h6></center></div>
-                                </a>
-                            </div>
-                        </div><!--/row-fluid-->
-                    </div><!--/item-->
-                    <div class="item">
-                        <div class="row-fluid">
-                            <div class="col-sm-6 col-md-6" id="BaseESRITopo" value="Topographic">
-                                <a href="#" class="thumbnail">
-                                    <img src="~/images/baselayers/topografic.PNG" style="max-width:100%;">
-                                    <div class="carousel-caption"><center><h6>ESRI Topographic</h6></center></div>
-                                </a>
-                            </div>
-                            <div class="col-sm-6 col-md-6" id="BaseOSM" value="OSM">
-                                <a href="#" class="thumbnail">
-                                    <img src="~/images/baselayers/OSM.PNG" style="max-width:100%;">
-                                    <div class="carousel-caption"><center><h6>OSM</h6></center></div>
-                                </a>
-                            </div>
-
-                        </div><!--/row-fluid-->
-                    </div><!--/item-->
-                </div><!--/carousel-inner-->
-
-                <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
-                    <span class="glyphicon glyphicon-chevron-left"></span>
-                </a>
-                <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
-                    <span class="glyphicon glyphicon-chevron-right"></span>
-                </a>
-            </div><!--/myCarousel-->
-        </div>
-<div class='mouse-position panel hide'>
-    <div class="panel-body">
-        <h6> <b id='mousemove'><b /></h6>
-    </div>
-</div>
-@Scripts.Render("~/bundles/appMapGlobal")
-@Scripts.Render("~/bundles/appMap")
+    @Scripts.Render("~/bundles/appMapGlobal")
+    @Scripts.Render("~/bundles/appMap")

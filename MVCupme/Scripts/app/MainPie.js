@@ -25,7 +25,7 @@ function pie(arrayJsonFondos, idContainer, nombre) {
             style: { "color": "#333333", "fontSize": "16px" }
         },
         subtitle: {
-            text: ''
+            text: 'En Pesos por Millon($M)'
         },
         credits: {
             text: 'FONDOS-UPME',
@@ -56,7 +56,7 @@ function pie(arrayJsonFondos, idContainer, nombre) {
         confPie.drilldown = new Object();
         //confPie.drilldown.drillUpButton = 'Regresar al CONCEPTO';
         confPie.drilldown.series = glo.pieEstado;
-        confPie.subtitle.text = 'Concepto/Estado';
+        confPie.subtitle.text = 'Concepto/Estado En Pesos Por Millon($M)';
         
         console.log(confPie);
     }
@@ -123,16 +123,23 @@ function getFondoDataPie(where, idGrupo, array, nombre) {
 
 function GetArrayPie(featureCollection, idGrupo, array) {
     var sum_VPU = 0;
-    var arrayJsonFondos = [];
+    var arrayJsonFondos = [], labelpie='';
     for (var i = 0; i < featureCollection.features.length; i++) {
+        if (array[featureCollection.features[i].properties[idGrupo]] === undefined) {
+            labelpie = featureCollection.features[i].properties[idGrupo];
+        } else {
+            labelpie = array[featureCollection.features[i].properties[idGrupo]];
+        }
         if (i != featureCollection.features.length - 1) {
             if (featureCollection.features[i].properties[idGrupo] == featureCollection.features[i + 1].properties[idGrupo]) {
                 sum_VPU = sum_VPU + featureCollection.features[i].properties[glo.VarMapeo];
             } else {
                 sum_VPU = sum_VPU + featureCollection.features[i].properties[glo.VarMapeo];
+                var valor = array[featureCollection.features[i].properties[idGrupo]];
+
                 var row = {
-                    name: array[featureCollection.features[i].properties[idGrupo]],
-                    y: sum_VPU
+                    name: labelpie,
+                    y: parseInt(sum_VPU/1000000)
                 };
                 arrayJsonFondos.push(row);
                 var sum_VPU = 0;
@@ -140,8 +147,8 @@ function GetArrayPie(featureCollection, idGrupo, array) {
         } else {
             sum_VPU = sum_VPU + featureCollection.features[i].properties[glo.VarMapeo];
             var row = {
-                name: array[featureCollection.features[i].properties[idGrupo]],
-                y: sum_VPU
+                name: labelpie,
+                y: parseInt(sum_VPU/1000000)
             };
             arrayJsonFondos.push(row);
         }
@@ -158,7 +165,7 @@ function GetArrayPieES(featureCollection, idGrupo, array) {
             } else {
                 sum_VPU = sum_VPU + featureCollection.features[i].properties[glo.VarMapeo];
                 var row = [
-                   array[featureCollection.features[i].properties[idGrupo]], sum_VPU
+                   array[featureCollection.features[i].properties[idGrupo]], parseInt(sum_VPU/1000000)
                 ];
                 arrayJsonFondos.push(row);
 
@@ -173,7 +180,7 @@ function GetArrayPieES(featureCollection, idGrupo, array) {
         } else {
             sum_VPU = sum_VPU + featureCollection.features[i].properties[glo.VarMapeo];
             var row = [
-                   array[featureCollection.features[i].properties[idGrupo]], sum_VPU
+                   array[featureCollection.features[i].properties[idGrupo]], parseInt(sum_VPU/1000000)
             ];
             arrayJsonFondos.push(row);
             arrayObjet.push({
@@ -200,7 +207,7 @@ function GetArrayPieCON(featureCollection, idGrupo, array) {
                 sum_VPU = sum_VPU + featureCollection.features[i].properties[glo.VarMapeo];
                 var row = {
                     name: array[featureCollection.features[i].properties[idGrupo]],
-                    y: sum_VPU,
+                    y: parseInt(sum_VPU/1000000),
                     drilldown: array[featureCollection.features[i].properties[idGrupo]]
                 };
                 arrayJsonFondos.push(row);
@@ -210,7 +217,7 @@ function GetArrayPieCON(featureCollection, idGrupo, array) {
             sum_VPU = sum_VPU + featureCollection.features[i].properties[glo.VarMapeo];
             var row = {
                 name: array[featureCollection.features[i].properties[idGrupo]],
-                y: sum_VPU,
+                y: parseInt(sum_VPU/1000000),
                 drilldown: array[featureCollection.features[i].properties[idGrupo]]
             };
             arrayJsonFondos.push(row);

@@ -14,7 +14,8 @@ config = {
     CON: '5',
     EST: '6',
     ICCE: '2',
-    mill:' M'
+    mill: ' ',
+    mll: ' '
 
 }
 
@@ -39,7 +40,8 @@ glo = {
         filEsc2: 'CODIGO_DEP',
         filEsc3: 'COD_DPTO'
     },
-    fCICEE:''
+    fCICEE: '',
+    FeIni:''
 
 }
 var SumaTotales = { Valor: 0, Beneficiarios: 0 };
@@ -105,7 +107,7 @@ legend.onAdd = function (map) {
        labels = [];
 
     // loop through our density intervals and generate a label with a colored square for each interval
-    div.innerHTML += '<b>Valor ' + glo.tituloLeyenda + '</b> <br>(M=Millones) <hr>';
+    div.innerHTML += '<b>Valor ' + glo.tituloLeyenda + '</b> <br>En Pesos por Millon($M) <hr>';
 
     for (var i = 0; i < Limitesleyenda.length; i++) {
         if (i == 0) {
@@ -160,7 +162,9 @@ Array.prototype.unique = function (a) {
 //CAPAS BASE 
 **********************************/
 
+//$('.carousel').hide();
 // Activacion de carousel
+
 $('.carousel').carousel({
     interval: 7000
 });
@@ -235,11 +239,7 @@ $(function () {
 
 
 
-$('#date_ini').datetimepicker({
-    format: 'DD/MM/YYYY',
-    locale: 'es',
-    defaultDate: '01/01/' + moment().format('YYYY')
-});
+
 $('#date_fin').datetimepicker({
     format: 'DD/MM/YYYY',
     locale: 'es',
@@ -248,15 +248,17 @@ $('#date_fin').datetimepicker({
 
 
 
-var arrayFondos = [];
+var arrayFondos = [],arrayFondosID = [];
 var query_fondos = L.esri.Tasks.query({
     url: config.dominio + config.urlHostDataFO + 'MapServer/'+config.FO
 });
 
-query_fondos.where("1='1'").returnGeometry(false).run(function (error, featureCollection) {
+query_fondos.where("3='3'").returnGeometry(false).run(function (error, featureCollection) {
     var data = [];
     $.each(featureCollection.features.reverse(), function (index, value) {
+
         arrayFondos[value.properties.ID_FONDO] = value.properties.SIGLA;
+        arrayFondosID.push(value.properties.ID_FONDO);
         var array = { label: value.properties.SIGLA+" - "+value.properties.NOMBRE, value: value.properties.ID_FONDO};
         data.push(array);
     });
@@ -265,7 +267,7 @@ query_fondos.where("1='1'").returnGeometry(false).run(function (error, featureCo
 });
 
 
-var arraySectores = [];
+var arraySectores = [], arraySectoresID=[];
 var query_sectores = L.esri.Tasks.query({
     url: config.dominio + config.urlHostDataFO + 'MapServer/'+config.SEC
 });
@@ -274,6 +276,7 @@ query_sectores.where("1='1'").returnGeometry(false).run(function (error, feature
     var data = [];
     $.each(featureCollection.features.reverse(), function (index, value) {
         arraySectores[value.properties.ID_SECTOR] = value.properties.SIGLA;
+        arraySectoresID.push(value.properties.ID_SECTOR);
         var array = { label: value.properties.SIGLA + " - " + value.properties.NOMBRE, value: value.properties.ID_SECTOR };
         data.push(array);
     });
@@ -282,7 +285,7 @@ query_sectores.where("1='1'").returnGeometry(false).run(function (error, feature
 
 
 
-var arrayConcepto = [];
+var arrayConcepto = [], arrayConceptoID=[];
 var query_Concepto = L.esri.Tasks.query({
     url: config.dominio + config.urlHostDataFO + 'MapServer/'+config.CON
 });
@@ -291,6 +294,7 @@ query_Concepto.where("1='1'").returnGeometry(false).run(function (error, feature
     var data = [];
     $.each(featureCollection.features.reverse(), function (index, value) {
         arrayConcepto[value.properties.ID_CONCEPTO] = value.properties.CONCEPTO;
+        arrayConceptoID.push(value.properties.ID_CONCEPTO);
         var array = { label: value.properties.CONCEPTO, value: value.properties.ID_CONCEPTO  };
         data.push(array);
     });
@@ -298,10 +302,7 @@ query_Concepto.where("1='1'").returnGeometry(false).run(function (error, feature
 });
 
 
-var arrayEstado = [];
-
-
-
+var arrayEstado = [],arrayEstadoID = [];
 var query_Estado = L.esri.Tasks.query({
     url: config.dominio + config.urlHostDataFO + 'MapServer/'+config.EST
 });
@@ -310,6 +311,7 @@ query_Estado.where("1='1'").returnGeometry(false).run(function (error, featureCo
     var data = [];
     $.each(featureCollection.features.reverse(), function (index, value) {
         arrayEstado[value.properties.ID_ESTADO] = value.properties.ESTADO;
+        arrayEstadoID.push(value.properties.ID_ESTADO);
         var array = {label: value.properties.ESTADO , value: value.properties.ID_ESTADO};
         data.push(array);
     });
@@ -355,8 +357,10 @@ function getSelectFO(values) {
     if (values.length != 0) {
         $.each(glo.SectoFo, function (index, value) {
             if (values.indexOf(String(value.properties.SEC)) >= 0) {
-                var array = { label: arrayFondos[value.properties.FO], value: value.properties.FO };
-                data.push(array);
+                if (arrayFondos[value.properties.FO] != undefined) {
+                    var array = { label: arrayFondos[value.properties.FO], value: value.properties.FO };
+                    data.push(array);
+                }                
             }
         });
         $("#SelctFondo").multiselect('dataprovider', data);
@@ -374,9 +378,10 @@ function getSelectCon(values) {
         $.each(glo.ConEst, function (index, value) {
             console.log(values.indexOf(String(value.properties.CON)));
             if (values.indexOf(String(value.properties.CON)) >= 0) {
-                
-                var array = { label: arrayEstado[value.properties.ES], value: value.properties.ES };
-                data.push(array);
+                if (arrayEstado[value.properties.ES] != undefined) {
+                    var array = { label: arrayEstado[value.properties.ES], value: value.properties.ES };
+                    data.push(array);
+                }
             }
         });
         $("#SelctEstado").multiselect('dataprovider', data);

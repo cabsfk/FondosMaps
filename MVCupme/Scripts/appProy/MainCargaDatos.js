@@ -24,10 +24,10 @@ function addSitioUpme(fc, origen, isu) {
         }
     }
     glo.loadProy.push(origen);
-    console.log(glo.loadProy.length + ' paso');
+    //console.log(glo.loadProy.length + ' paso');
     if (glo.loadProy.length > 2) {
         waitingDialog.hide();
-        console.log(glo.IDSU);
+        //console.log(glo.IDSU);
         glo.IDSU = glo.IDSU.unique();
         crearSU();
     }
@@ -40,23 +40,34 @@ function getMultiSelect(id) {
     });
     return selection;
 }
-function getParametros() {
+function getParametros(tipo) {
     var datemin = $('#date_ini').data("DateTimePicker").date().format('YYYY-MM-DD');
     var datemax = $('#date_fin').data("DateTimePicker").date().format('YYYY-MM-DD');
-
+    var where = '';
     $("#TextFechaIni").empty().append(datemin);
     $("#TextFechaFin").empty().append(datemax);
-    var where = "FE >= date '" + datemin + "' and FE<= date '" + datemax + "'" + glo.FilBusqueda;
+    if (tipo == 'FO') {
+        where = "FE >= date '" + datemin + "' and FE<= date '" + datemax + "'"
+        + ' and  FO IN (' + glo.arrayFondosID.join(',') + ") "
+        + ' and  SEC IN (' + glo.arraySectoresID.join(',') + ") "
+        + glo.FilBusqueda;
+    } else {
+        where = "FE >= date '" + datemin + "' and FE<= date '" + datemax + "'"
+        + glo.FilBusqueda;
+    }
+    
     return where;
 }
+
 function getData() {
     waitingDialog.show();
     glo.IDSU = [];
     glo.loadProy = [];
     glo.SUProyectos = [];
-    var where = getParametros();
+    
     //var where = '1=1';
     if ($('#checkFondos').is(':checked')) {
+        var where = getParametros('FO');
         var queryDataProyFO = L.esri.Tasks.query({
             url: config.dominio + config.urlHostDataProy + 'MapServer/' + config.FONDOS
         });
@@ -87,10 +98,12 @@ function getData() {
         addSitioUpme('', '', '');
     }
     if ($('#checkPCR').is(':checked')) {
+        var where = getParametros('PCR');
         var queryDataProySuPCR = L.esri.Tasks.query({
             url: config.dominio + config.urlHostDataProy + 'MapServer/' + config.PECOR
         });
         queryDataProySuPCR.where(where).returnGeometry(false).run(function (error, fcPCR, response) {
+            
             if (fcPCR.features.length > 0) {
                 glo.fcPCR = fcPCR;
                 addSitioUpme(fcPCR, 'PCR', 'ISU');
@@ -102,6 +115,7 @@ function getData() {
         addSitioUpme('', '', '');
     }
     if ($('#checkPERS').is(':checked')) {
+        var where = getParametros('PERS');
         var queryDataProyPERS = L.esri.Tasks.query({
             url: config.dominio + config.urlHostDataProy + 'MapServer/' + config.PERS
         });
@@ -135,25 +149,35 @@ function getGeoAdmin() {
         
     });
 
-    var querySU = L.esri.Tasks.query({
-        url: config.dominio + config.urlHostDataProy + 'MapServer/' + config.SITIOS_UPME
+    var queryFechaMin = L.esri.Tasks.query({
+        url: config.dominio + config.urlHostDataProy + 'MapServer/' + config.FONDOS
     });
-    querySU
-     .fields(['ID_CENTRO_POBLADO', 'COD_DPTO', 'COD_MPIO', 'NOMBRE_SITIO'])
-      .orderBy(['ID_CENTRO_POBLADO']);
-    querySU.where("1=1").run(function (error, geojson, response) {
-        glo.jsonSU = geojson;
-        var getqueryDatavss = L.esri.Tasks.query({
-            url: config.dominio + config.urlHostPIEC + 'MapServer/' + config.VSS_SITIOS
-        });
 
-        getqueryDatavss.where("PLA_ANO_BASE ='" + (parseInt(moment().format('YYYY')) - 1) + "'").run(function (error, fc) {
-            glo.VSS_SITIOS = fc;
-            console.log(glo.VSS_SITIOS);
-            getData();
+    queryFechaMin.fields(['FE']).where("2=2").orderBy('FE', 'ASC').limit(1);
+    queryFechaMin.run(function (error, featureCollection, response) {
+        glo.FeIni = moment(featureCollection.features[featureCollection.features.length - 1].properties.FE, 'x').add(5, 'hours').format('DD/MM/YYYY');
+        $('#date_ini').datetimepicker({
+            format: 'DD/MM/YYYY',
+            locale: 'es',
+            defaultDate: glo.FeIni
         });
-        
-        waitingDialog.hide();
+        var querySU = L.esri.Tasks.query({
+            url: config.dominio + config.urlHostDataProy + 'MapServer/' + config.SITIOS_UPME
+        });
+        querySU
+        .fields(['ID_CENTRO_POBLADO', 'COD_DPTO', 'COD_MPIO', 'NOMBRE_SITIO'])
+        .orderBy(['ID_CENTRO_POBLADO']);
+        querySU.where("1=1").run(function (error, geojson, response) {
+            glo.jsonSU = geojson;
+            var getqueryDatavss = L.esri.Tasks.query({
+                url: config.dominio + config.urlHostPIEC + 'MapServer/' + config.VSS_SITIOS
+            });
+            getqueryDatavss.where("PLA_ANO_BASE ='" + (parseInt(moment().format('YYYY')) - 1) + "'").run(function (error, fc) {
+                glo.VSS_SITIOS = fc;
+                getData();
+            });
+            waitingDialog.hide();
+        });
     });
 }
 

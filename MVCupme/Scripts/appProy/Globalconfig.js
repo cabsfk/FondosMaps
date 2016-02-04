@@ -27,8 +27,11 @@ glo = {
     jsonDto: "",
     jsonSU: "",
     arrayFondos: [],
+    arrayFondosID: [],
     arrayConcepto: [],
-    arraySectores:[],
+    arrayConceptoID: [],
+    arraySectores: [],
+    arraySectoresID: [],
     fcFO: "",
     fcPCR: "",
     fcPERS: "",
@@ -232,11 +235,6 @@ $(function () {
 
 
 
-$('#date_ini').datetimepicker({
-    format: 'DD/MM/YYYY',
-    locale: 'es',
-    defaultDate: '01/01/' + moment().format('YYYY')
-});
 $('#date_fin').datetimepicker({
     format: 'DD/MM/YYYY',
     locale: 'es',
@@ -255,11 +253,11 @@ query_fondos.where("1='1'").returnGeometry(false).run(function (error, featureCo
     console.log(featureCollection);
     $.each(featureCollection.features, function (index, value) {
         glo.arrayFondos[value.properties.ID_FONDO] = value.properties.SIGLA;
+        glo.arrayFondosID.push(value.properties.ID_FONDO);
         var array = { label: value.properties.SIGLA+" - "+value.properties.NOMBRE, value: value.properties.ID_FONDO};
         data.push(array);
     });
     $("#SelctFondo").multiselect('dataprovider', data);
-    //$('#SelctFondo').multiselect('disable');
 });
 
 
@@ -285,6 +283,7 @@ query_sectores.where("1='1'").returnGeometry(false).run(function (error, feature
     var data = [];
     $.each(featureCollection.features.reverse(), function (index, value) {
         glo.arraySectores[value.properties.ID_SECTOR] = value.properties.SIGLA;
+        glo.arraySectoresID.push(value.properties.ID_SECTOR);
 
     });
     // $("#SelctSectores").multiselect('dataprovider', data);

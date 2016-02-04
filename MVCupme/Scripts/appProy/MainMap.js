@@ -20,9 +20,11 @@
                 activacion = '';
                 for (i = 0; i < ProFO.features.length; i++) {
                     var feature = ProFO.features[i];
-                    feature.properties.FO = glo.arrayFondos[feature.properties.FO] == undefined ? '-' : glo.arrayFondos[feature.properties.FO];
-                    feature.properties.SEC = glo.arraySectores[feature.properties.SEC] == undefined ? '-' : glo.arrayFondos[feature.properties.SEC];
-                    feature.properties.FE = moment(feature.properties.FE).tz("America/Bogota").add(5, 'hours').format('DD/MM/YYYY');
+                    //console.log(feature.properties.FO);
+                    //console.log(feature.properties.SEC);
+                    var FO = glo.arrayFondos[feature.properties.FO] == undefined ? '-' : glo.arrayFondos[feature.properties.FO];
+                    var SEC = glo.arraySectores[feature.properties.SEC] == undefined ? '-' : glo.arraySectores[feature.properties.SEC];
+                    var FE = moment(feature.properties.FE).tz("America/Bogota").add(5, 'hours').format('DD/MM/YYYY');
                     htmlpopup =
                         '<div class="panel panel-default  ">' +
                               '<div class="panel-body">' +
@@ -30,11 +32,11 @@
                                         '<small>Sitio a Energizar:</small> ' + properties.NOMBRE_SITIO + '<br>' +
                                         '<small>Viviendas Beneficiadas:</small> ' + numeral(feature.properties.U).format('0,0') + '<br>' +
                                         '<small>Valor proyecto:</small> ' + numeral(feature.properties.VP/1000000).format('$0,0') +config.mill+ ' <br>' +
-                                        '<small>Fondo:</small> ' + feature.properties.FO + '<br>' +
-                                        '<small>Sector:</small> ' + feature.properties.SEC + '<br>' +
+                                        '<small>Fondo:</small> ' + FO + '<br>' +
+                                        '<small>Sector:</small> ' + SEC + '<br>' +
                                         '<small>Estado:</small> ' + feature.properties.ES + '<br>' +
                                         '<small>Concepto:</small> ' + feature.properties.CON + '<br>' +
-                                        '<small>Fecha Proyecto:</small> ' + feature.properties.FE + '<br>' +
+                                        '<small>Fecha Proyecto:</small> ' + FE + '<br>' +
                               '</div>' +
                             '</div>';
                     glo.html.FO.push(htmlpopup);

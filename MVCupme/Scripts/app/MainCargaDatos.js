@@ -51,6 +51,7 @@ function actualizarparametros(feature,row){
         }
         
     }
+    return feature;
     
 
 }
@@ -67,7 +68,8 @@ function calculoDepto(fc, LyrDeptoSim) {
     getqueryDistFondos.where(whereParametros).run(function (error, featureCollection, response) {
         if (error == undefined) {
             for (var i = 0; i < featureCollection.features.length; i++) {
-                var filDpto=turf.filter(fc, 'D', featureCollection.features[i].properties.D);
+                var filDpto = turf.filter(fc, 'D', featureCollection.features[i].properties.D);
+                //console.log(filDpto);
                 var row = {
                     D: featureCollection.features[i].properties.D,
                     U: sumCampo(filDpto, 'U'),
@@ -80,7 +82,10 @@ function calculoDepto(fc, LyrDeptoSim) {
                     VT: sumCampo(filDpto, 'VT'),
                     CANT: filDpto.features.length
                 }
+                //console.log(LyrDeptoSim);
+                //console.log(row);
                 LyrDeptoSim = actualizarparametros(LyrDeptoSim, row);
+                //console.log(LyrDeptoSim);
             
             }
             Limitesleyenda = getBreaks(LyrDeptoSim);
@@ -164,6 +169,7 @@ function getMultiSelect(id) {
 
 var whereParametros = "";
 function getParametros() {
+
     var datemin = $('#date_ini').data("DateTimePicker").date().format('YYYY-MM-DD');
     var datemax = $('#date_fin').data("DateTimePicker").date().format('YYYY-MM-DD');
     $('#labelfechaini').empty().append($('#date_ini').data("DateTimePicker").date().format('DD/MM/YYYY'));
@@ -187,10 +193,10 @@ function getParametros() {
         glo.VarMapeo = 'VPUA';
     }
     var params = "";
-    params = SelctFondo.length == 0 ? params : params + ' and  FO IN (' + SelctFondo.join(',') + ")";
-    params = SelctSectores.length == 0 ? params : params + ' and  SEC IN (' + SelctSectores.join(',') + ")";
-    params = SelctEstado.length == 0 ? params : params + ' and  ES IN (' + SelctEstado.join(',') + ")";
-    params = SelctConcepto.length == 0 ? params : params + ' and  CON IN (' + SelctConcepto.join(',') + ")";
+    params = SelctFondo.length == 0 ? params + ' and  FO IN (' + arrayFondosID.join(',') + ")" : params + ' and  FO IN (' + SelctFondo.join(',') + ")";
+    params = SelctSectores.length == 0 ? params + ' and  SEC IN (' + arraySectoresID.join(',') + ")" : params + ' and  SEC IN (' + SelctSectores.join(',') + ")";
+    params = SelctEstado.length == 0 ? params  : params + ' and  ES IN (' + SelctEstado.join(',') + ")";
+    params = SelctConcepto.length == 0 ? params  : params + ' and  CON IN (' + SelctConcepto.join(',') + ")";
     
     var where = "fe >  date '" + datemin +
     "' and fe< date '" + datemax +
@@ -332,6 +338,7 @@ function getFondosData() {
                 if ($("#EscalaMap").val() == "Municipio") {
                     var cuentaValores = calculoMpio(fc, LyrMunicipioSim);
                 } else {
+                    //console.log(LyrDeptoSim)
                     var cuentaValores = calculoDepto(fc, LyrDeptoSim);
                 }
             } else {
@@ -352,20 +359,34 @@ function getFondosData() {
 
 function getDeptoSimp() {
     waitingDialog.show();
-    queryDeptoSimpli
-        .fields(['CODIGO_DEP', 'NOMBRE'])
-        .orderBy(['CODIGO_DEP']);
-    queryDeptoSimpli.where("1=1").run(function (error, geojsonDpto, response) {
-        LyrDeptoSim = geojsonDpto;
-        glo.jsonDto = JSON.parse(JSON.stringify(geojsonDpto));
+    var queryFechaMin = L.esri.Tasks.query({
+        url: config.dominio + config.urlHostDataFO + 'MapServer/' + config.INDI
     });
-    queryMunSimpli
-         .fields(['DPTO_CCDGO', 'MPIO_CCDGO', 'MPIO_CCNCT', 'MPIO_CNMBR'])
-         .orderBy(['MPIO_CCNCT']);
-    queryMunSimpli.where("1=1").run(function (error, geojsonMun, response) {
-        LyrMunicipioSim = geojsonMun;
-        glo.jsonMun = JSON.parse(JSON.stringify(geojsonMun));
-        getFondosData();
+
+    queryFechaMin.fields(['FE']).where("2=2").orderBy('FE', 'ASC').limit(1);
+    queryFechaMin.run(function (error, featureCollection, response) {
+        //console.log(moment(featureCollection.features[featureCollection.features.length - 1].properties.FE, 'x').add(5, 'hours').format('DD/MM/YYYY HH'));
+        glo.FeIni = moment(featureCollection.features[featureCollection.features.length - 1].properties.FE, 'x').add(5, 'hours').format('DD/MM/YYYY');
+        $('#date_ini').datetimepicker({
+            format: 'DD/MM/YYYY',
+            locale: 'es',
+            defaultDate: glo.FeIni
+        });
+        queryDeptoSimpli
+            .fields(['CODIGO_DEP', 'NOMBRE'])
+            .orderBy(['CODIGO_DEP']);
+        queryDeptoSimpli.where("1=1").run(function (error, geojsonDpto, response) {
+            LyrDeptoSim = geojsonDpto;
+            glo.jsonDto = JSON.parse(JSON.stringify(geojsonDpto));
+        });
+        queryMunSimpli
+             .fields(['DPTO_CCDGO', 'MPIO_CCDGO', 'MPIO_CCNCT', 'MPIO_CNMBR'])
+             .orderBy(['MPIO_CCNCT']);
+        queryMunSimpli.where("1=1").run(function (error, geojsonMun, response) {
+            LyrMunicipioSim = geojsonMun;
+            glo.jsonMun = JSON.parse(JSON.stringify(geojsonMun));
+            getFondosData();
+        });
     });
 }
 
